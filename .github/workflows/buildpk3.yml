@@ -1,4 +1,4 @@
-name: PK3 Builds
+name: Finished Builds
 
 on:
   push:
