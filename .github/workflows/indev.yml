@@ -1,10 +1,14 @@
-name: Finished Builds
+name: In-dev Builds
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+        - '**'
+        - '!main'
   pull_request:
-    branches: [ "main" ]
+    branches:
+        - '**'
+        - '!main'
 
 jobs:
   build:
@@ -13,12 +17,23 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        ref: main
+    - run: |
+        for branch in $(git for-each-ref --format='%(refname:short)' refs/heads); do
+            if [ -z $(git ls-tree --name-only $branch .merged) ] && [ $branch != "main" ]; then
+                continue
+            fi
+            git merge $branch --no-commit --no-ff -X theirs
+            git reset main
+        done
+        
     
     - name: Set current date as env variable # pacola if coyping from https://stackoverflow.com/questions/60942067/get-current-date-and-time-in-github-workflows was a challenge:
       run: echo "NOW=$(date +%Y-%m-%d)" >> $GITHUB_ENV
-      
+
     - name: get PaK3 and the rest # now this is a fusion of the ntopp git and muder mystery git -pac
-      run: | 
+      run: |
         sudo apt-get install -y nodejs
         git clone https://github.com/UnmatchedBracket/PaK3.git
         cd PaK3
@@ -27,20 +42,20 @@ jobs:
     - name: do the thing pls
       run: |
         mkdir build
-        node PaK3/main.js src/ build/SpongebobSquigglepants-${{ env.NOW }}.pk3
+        node PaK3/main.js src/ build/SpongebobSquigglepants-INDEV-${{ env.NOW }}.pk3
     
     - name: send thing to the action tab
       uses: actions/upload-artifact@v4
       with:
-        name: SpongebobSquigglepants
-        path: build/SpongebobSquigglepants-${{ env.NOW }}.pk3
+        name: Spongebob Squigglepants INDEV
+        path: build/SpongebobSquigglepants-INDEV-${{ env.NOW }}.pk3
 
     - name: could you preetty please send the file to the discord
       uses: sinshutu/upload-to-discord@master
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       with:
-        args: build/SpongebobSquigglepants-${{ env.NOW }}.pk3
+        args: build/SpongebobSquigglepants-INDEV-${{ env.NOW }}.pk3
 
     - name: gives us the commits pleaaase
       uses: Sniddl/discord-commits@v1.6
