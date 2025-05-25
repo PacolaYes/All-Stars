@@ -7,12 +7,14 @@ on:
     paths-ignore:
         - '**.md'
         - '.github/**'
+        - '.gitignore'
   pull_request:
     branches:
         - main
     paths-ignore:
         - '**.md'
         - '.github/**'
+        - '.gitignore'
 
 jobs:
   build:
