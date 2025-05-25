@@ -16,21 +16,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set current date as env variable # pacola if coyping from https://stackoverflow.com/questions/60942067/get-current-date-and-time-in-github-workflows was a challenge:
-      run: echo "NOW=$(date +%Y-%m-%d)" >> $GITHUB_ENV
-      
     - name: get all branches !! # todo; check if this works!
+      uses: actions/checkout@v4
+      with:
+        ref: main
       run: |
-        git checkout main
         for branch in $(git for-each-ref --format='%(refname:short)' refs/heads); do
+            echo $branch
             if [ -z $(git ls-tree --name-only $branch .merged) ] && [ $branch != "main" ]; then
                 continue
             fi
             git merge $branch --no-commit --no-ff -X theirs
             git reset main
         done
+        
+    
+    - name: Set current date as env variable # pacola if coyping from https://stackoverflow.com/questions/60942067/get-current-date-and-time-in-github-workflows was a challenge:
+      run: echo "NOW=$(date +%Y-%m-%d)" >> $GITHUB_ENV
 
     - name: get PaK3 and the rest # now this is a fusion of the ntopp git and muder mystery git -pac
       run: |
