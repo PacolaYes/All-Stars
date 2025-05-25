@@ -21,7 +21,7 @@ jobs:
         ref: main
 
     - name: get all branches !!
-    - run: |
+      run: |
         for branch in $(git for-each-ref --format='%(refname:short)' refs/heads); do
             echo $branch
             if [ -z $(git ls-tree --name-only $branch .merged) ] && [ $branch != "main" ]; then
