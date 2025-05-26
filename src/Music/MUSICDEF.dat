@@ -26,3 +26,11 @@ Authors = Ryo_Magamatsu,_Atsuko_Asahi,_Shiho_Fuji,_Yasuaki_Iwata
 Soundtestpage = 1
 Soundtestcond = 0
 BPM = 120
+
+Lump MKWLVL
+Title = Wi-Fi_Menu
+Alttitle = Mario_Kart_Wii
+Authors = Asuka_Ohta,_Ryo_Nagamatsu
+Soundtestpage = 1
+Soundtestcond = 0
+BPM = 81
