@@ -31,6 +31,7 @@ local playerVars = {
 
 Squigglepants = $.copyTo(globalVars, $)
 local voteScreen = Squigglepants.voteScreen
+local HUD = Squigglepants.hud
 
 local function isSpecialStage(map)
 	if map == nil then map = gamemap end
@@ -102,6 +103,8 @@ function Squigglepants.startVote(mapBlacklist, gtBlacklist)
 		mo.flags = MF_NOTHINK
 		mo.state = S_INVISIBLE
 	end
+	
+	HUD.changeState("votingScreen-voting")
 end
 
 -- handle player controls !
@@ -114,21 +117,30 @@ addHook("PreThinkFrame", function()
 		local sp = p.squigglepants
 		local vote = sp.votingScreen
 		
-		if ((p.cmd.sidemove >= 25) and not (vote.lastsidemove >= 25))
-		or ((p.cmd.sidemove <= -25) and not (vote.lastsidemove <= -25))
-			local add = clamp(p.cmd.sidemove)
-			
-			vote.selected = $+add
-			if vote.selected < 1 then
-				vote.selected = 4
-			elseif vote.selected > 4 then
-				vote.selected = 1
+		if not vote.hasSelected then
+			if ((p.cmd.sidemove >= 25) and not (vote.lastsidemove >= 25))
+			or ((p.cmd.sidemove <= -25) and not (vote.lastsidemove <= -25))
+				local add = clamp(p.cmd.sidemove)
+				
+				vote.selected = $+add
+				if vote.selected < 1 then
+					vote.selected = 4
+				elseif vote.selected > 4 then
+					vote.selected = 1
+				end
 			end
-		end
-		
-		if (p.cmd.buttons & BT_JUMP)
-		and not (vote.lastbuttons & BT_JUMP) then
-			S_StartSound(nil, 666, p) -- demon sfx :scream:
+			
+			if (p.cmd.buttons & BT_JUMP)
+			and not (vote.lastbuttons & BT_JUMP) then
+				S_StartSound(nil, sfx_spvsel, p)
+				vote.hasSelected = true
+			end
+		else
+			if (p.cmd.buttons & BT_SPIN)
+			and not (vote.lastbuttons & BT_SPIN) then
+				S_StartSound(nil, sfx_thok, p)
+				vote.hasSelected = false
+			end
 		end
 		
 		vote.lastbuttons = p.cmd.buttons

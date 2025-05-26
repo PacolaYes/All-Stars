@@ -17,7 +17,8 @@ G_AddGametype({ -- get us our gametype
 })
 
 rawset(_G, "Squigglepants", { -- and our variable! below is also variable stuff
-	sync = {}
+	sync = {},
+	hud = {}
 })
 
 addHook("NetVars", function(net)
@@ -50,9 +51,12 @@ registerMetatable(mt)
 -- until it becomes Squigglepants.dofiling, atleast
 dofile("functions.lua")
 
+Squigglepants.dofile("Freeslots/voting.lua")
+
 Squigglepants.dofile("Game/Gametypes/base.lua") -- base of the seperate gametypes
 Squigglepants.dofile("Game/base.lua") -- base of the whole thing
 Squigglepants.dofile("Game/voting.lua")
 
+Squigglepants.dofile("HUD/system.lua")
 Squigglepants.dofile("HUD/discordlink.lua")
-Squigglepants.dofile("HUD/voting.lua")
+Squigglepants.dofile("HUD/Voting Screen/voting.lua")

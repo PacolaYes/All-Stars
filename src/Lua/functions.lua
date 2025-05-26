@@ -70,6 +70,17 @@ function Squigglepants.getPlayerCount(blacklist)
 	return numPlyr
 end
 
+-- stores patch in table
+-- other than that
+-- its just cachePatch :P
+local patchTable = {}
+function Squigglepants.getPatch(v, name)
+	if not (patchTable[name] and patchTable[name].valid) then
+		patchTable[name] = v.cachePatch(name)
+	end
+	return patchTable[name]
+end
+
 -- below ill only do MATH related stuff
 -- i know, its pretty scary
 
