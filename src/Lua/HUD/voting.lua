@@ -19,6 +19,7 @@ addHook("HUD", function(v, p)
 		v.drawString(x, patch.height*FU/2, G_BuildMapTitle(map.map), 0, "thin-fixed")
 		v.drawString(x, patch.height*FU/2 + 8*FU, gametype.name, 0, "thin-fixed")
 		v.drawString(160*FU, 100*FU, p.squigglepants.votingScreen.selected, 0, "fixed-center")
+		v.drawString(160*FU, 108*FU, "secs left: "+(10*TICRATE - voteScreen.tics)/TICRATE, 0, "fixed-center")
 		
 		x = $ + patch.width*(FU/2)
 	end

@@ -8,6 +8,8 @@
 -- init values
 -- for the global variable
 
+local voteTime = 10*TICRATE
+
 local globalVars = {
 	voteScreen = {
 		isVoting = false,
@@ -65,7 +67,7 @@ function Squigglepants.getRandomMap(self, doMap, doGametype)
 	return self
 end
 
-function Squigglepants.startVote(gtBlacklist) -- blacklist only takes one argument, the gametype chosen, does not take random into account, that is always pure random
+function Squigglepants.startVote(gtBlacklist) -- blacklist only takes one argument, the gametype chosen, does not take random into account, that's always pure random
 	if not Squigglepants.inMode() then return end
 	
 	local mapList = {}
