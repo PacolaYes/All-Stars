@@ -32,14 +32,20 @@ local playerVars = {
 Squigglepants = $.copyTo(globalVars, $)
 local voteScreen = Squigglepants.voteScreen
 
-local function IsSpecialStage(map)
+local function isSpecialStage(map)
 	if map == nil then map = gamemap end
 	
 	return (map >= sstage_start and map <= sstage_end)
 	or (map >= smpstage_start and map <= smpstage_end)
 end
 
-function Squigglepants.getRandomMap(self, doMap, doGametype)
+-- gets a random map and gametype
+-- self is a table, in which the stuff will be stored
+-- doMap is whether you want maps or not (true by default)
+-- doGametype is whether you want gametypes or not (true by default)
+-- mapBlacklist is a function that gets the map number as an argument, returning true means that the map is blacklisted.
+-- gtBlacklist is a function that gets the gametype number as an argument, returning true means that the gametype is blacklisted.
+function Squigglepants.getRandomMap(self, doMap, doGametype, mapBlacklist, gtBlacklist)
 	if self == nil then self = {} end
 	if doMap == nil then doMap = true end
 	if doGametype == nil then doGametype = true end
@@ -48,7 +54,7 @@ function Squigglepants.getRandomMap(self, doMap, doGametype)
 		self.map = 0
 		local i = 0
 		while not mapheaderinfo[self.map]
-		or IsSpecialStage(self.map) do
+		or (type(mapBlacklist) == "function" and mapBlacklist(self.map)) do
 			self.map = P_RandomRange(1, 1035)
 		end
 	end
@@ -56,31 +62,37 @@ function Squigglepants.getRandomMap(self, doMap, doGametype)
 	if doGametype then
 		self.gametype = P_RandomRange(1, #Squigglepants.gametypes)
 		local i = 0
-		while Squigglepants.getGametypeDef(self.gametype).exclusive do -- add map mechanism stuff l8r
+		while Squigglepants.getGametypeDef(self.gametype).exclusive -- add map mechanism stuff l8r
+		or (type(gtBlacklist) == "function" and gtBlacklist(self.gametype)) do
 			self.gametype = P_RandomRange(1, #Squigglepants.gametypes)
 			
 			i = $+1
-			if i > 9999 then break end
+			if i > 9999 then error("Timeout! No gametypes were found, did you screw up something?") break end
 		end
 	end
 	
 	return self
 end
 
-function Squigglepants.startVote(gtBlacklist) -- blacklist only takes one argument, the gametype chosen, does not take random into account, that's always pure random
+-- starts a vote, preferred as only setting
+-- voteScreen.isVoting to true is not all that a vote wants.
+-- mapBlacklist and gtBlacklist are the same as above soo
+-- mapBlacklist is a function that gets the map number as an argument, returning true means that the map is blacklisted.
+-- gtBlacklist is a function that gets the gametype number as an argument, returning true means that the gametype is blacklisted.
+-- these blacklists DO NOT apply to the random selection, that's always random
+
+-- reminder to self: update this if changing the top one
+-- otherwise just go read the top one :P
+function Squigglepants.startVote(mapBlacklist, gtBlacklist)
 	if not Squigglepants.inMode() then return end
 	
 	local mapList = {}
 	for i = 1, 3 do
-		mapList[i] = Squigglepants.getRandomMap($)
-	end
-	
-	if type(gtBlacklist) == "function" then -- note to self: ignore this for now
-		for i = 1, 3 do
-			while gtBlacklist(mapList[i].gametype) do
-				mapList[i] = Squigglepants.getRandomMap($, false)
-			end
+		local function trueBlacklist(map)
+			return (type(mapBlacklist) == "function" and mapBlacklist(map))
+			or isSpecialStage(map)
 		end
+		mapList[i] = Squigglepants.getRandomMap($, true, true, trueBlacklist, gtBlacklist)
 	end
 	
 	voteScreen.selectedMaps = mapList
