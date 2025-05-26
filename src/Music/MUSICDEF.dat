@@ -18,3 +18,11 @@ Authors = Kevin_Macleod
 Soundtestpage = 1
 Soundtestcond = 0
 BPM = 93
+
+Lump MK8LVL
+Title = Online_Menu
+Alttitle = Mario_Kart_8
+Authors = Ryo_Magamatsu,_Atsuko_Asahi,_Shiho_Fuji,_Yasuaki_Iwata
+Soundtestpage = 1
+Soundtestcond = 0
+BPM = 120
