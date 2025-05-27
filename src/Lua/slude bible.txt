@@ -15,3 +15,6 @@ music folder yayay
 O_MK8LVL.ogg. the map select theme
 
 O_MKWLVL.ogg. ditto but from the Nintendo WIIIIIII (make a setting later)
+
+asssets
+for the 10-4 timer use the score/rings/timer number font and for the 321 use the race 321 fonts.
