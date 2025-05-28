@@ -39,7 +39,7 @@ jobs:
                 continue
             fi
             echo $branch was merged!
-            git merge $branch --no-commit --no-ff -X theirs
+            git merge $branch --no-commit --no-ff --allow-unrelated-histories -X theirs
             git reset origin/main
         done
         
