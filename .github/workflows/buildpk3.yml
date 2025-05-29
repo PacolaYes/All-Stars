@@ -15,7 +15,7 @@ on:
         - '**.md'
         - '.github/**'
         - '.gitignore'
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   build:
