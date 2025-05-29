@@ -38,9 +38,11 @@ jobs:
                 echo $branch was skipped!
                 continue
             fi
-            echo $branch was merged!
+            git add .
+            echo $branch is being merged
             git merge $branch --no-commit --no-ff --allow-unrelated-histories -X theirs
-            git reset origin/main
+            git stash pop
+            echo $branch was merged!
         done
         
     
