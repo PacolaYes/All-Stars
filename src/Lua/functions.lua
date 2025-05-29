@@ -29,7 +29,11 @@ end
 function Squigglepants.copyTo(from, to)
 	for key, val in pairs(from) do
 		if type(val) == "table" then
-			to[key] = Squigglepants.copy(val)
+			if to[key] then
+				to[key] = Squigglepants.copyTo(val, $)
+			else
+				to[key] = Squigglepants.copy(val)
+			end
 		else
 			to[key] = val
 		end
@@ -55,19 +59,29 @@ function Squigglepants.inMode()
 	return gametype == GT_SQUIGGLEPANTS
 end
 
--- gets how many players exist
+-- gets a list with all players that exist
 -- blacklist should be a function
 -- said function gets a player as an argument
 -- returning true makes so said player is ignored
-function Squigglepants.getPlayerCount(blacklist)
-	local numPlyr = 0
+-- #playerlist = # of players that exist :P
+function Squigglepants.getPlayerList(blacklist)
+	local pList = {}
 	for p in players.iterate do
 		if type(blacklist) == "function"
 		and blacklist(p) then continue end
 		
-		numPlyr = $+1
+		pList[#pList+1] = p
 	end
-	return numPlyr
+	return pList
+end
+
+function Squigglepants.getRandomPlayer(blacklist)
+	local rp = P_RandomRange(0, 31)
+	while not (players[rp] and players[rp].valid)
+	or (type(blacklist) == "function" and blacklist(players[rp])) do
+		rp = P_RandomRange(0, 31)
+	end
+	return players[rp]
 end
 
 -- stores patch in table
@@ -79,6 +93,22 @@ function Squigglepants.getPatch(v, name)
 		patchTable[name] = v.cachePatch(name)
 	end
 	return patchTable[name]
+end
+
+-- makes alias to table in the Squigglepants table
+-- becaus apparently local sgsg = Squigglepants.voteScreen
+-- doesnt make it just an alias :P
+function Squigglepants.getAlias(t)
+	if type(t) ~= "table" then return end
+	
+	local alias = {}
+	local metatable = {
+		__index = t,
+		__newindex = t,
+		__usedindex = t
+	}
+	setmetatable(alias, metatable)
+	return alias
 end
 
 -- below ill only do MATH related stuff
