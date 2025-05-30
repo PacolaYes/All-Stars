@@ -11,6 +11,10 @@ addHook("MapChange", function()
 	Squigglepants = $.copyTo(ogVars.global, $) -- reset variables that we should :D
 	Squigglepants.hud.changeState("base", true)
 	
+	if gametype ~= GT_SQUIGGLEPANTS then
+		Squigglepants.gametype = 1 -- reset it back :D
+	end
+	
 	for p in players.iterate do
 		p.squigglepants = Squigglepants.copy(ogVars.player)
 	end

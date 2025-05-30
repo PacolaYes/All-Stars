@@ -55,8 +55,11 @@ Squigglepants.require = Squigglepants.dofile -- i think this makes it an alias
 
 -- checks if you're inside codename spongebob squigglepants
 -- pretty self-explanatory, i think :D
-function Squigglepants.inMode()
+-- if gametype is specified it also checks if you're
+-- in that specific gametype
+function Squigglepants.inMode(gt)
 	return gametype == GT_SQUIGGLEPANTS
+	and (gt ~= nil and Squigglepants.gametype == gt or gt == nil)
 end
 
 -- gets a list with all players that exist
@@ -93,22 +96,6 @@ function Squigglepants.getPatch(v, name)
 		patchTable[name] = v.cachePatch(name)
 	end
 	return patchTable[name]
-end
-
--- makes alias to table in the Squigglepants table
--- becaus apparently local sgsg = Squigglepants.voteScreen
--- doesnt make it just an alias :P
-function Squigglepants.getAlias(t)
-	if type(t) ~= "table" then return end
-	
-	local alias = {}
-	local metatable = {
-		__index = t,
-		__newindex = t,
-		__usedindex = t
-	}
-	setmetatable(alias, metatable)
-	return alias
 end
 
 -- below ill only do MATH related stuff
