@@ -34,3 +34,19 @@ Authors = Asuka_Ohta,_Ryo_Nagamatsu
 Soundtestpage = 1
 Soundtestcond = 0
 BPM = 81
+
+Lump RACTIM
+Title = Race_Against_Time!
+Alttitle = Plok
+Authors = Tim_Follin,_Geoff_Follin
+Soundtestpage = 1
+Soundtestcond = 0
+BPM = 165
+
+Lump MUSBOX
+Title = Music_Box
+Alttitle = Super_Mario_All-Stars
+Authors = Tim_Follin,_Geoff_Follin
+Soundtestpage = 1
+Soundtestcond = 0
+BPM = 51
