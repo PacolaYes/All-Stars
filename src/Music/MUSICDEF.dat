@@ -74,3 +74,11 @@ Authors = Soyo_Oka
 Soundtestpage = 1
 Soundtestcond = 0
 BPM = 135
+
+Lump COSCLO
+Title = Cosmic_Clones
+Alttitle = Super_Mario_Galaxy_2
+Authors = Takeshi_Hama,_Mahito Yokota,_Asuka_Hayazaki
+Soundtestpage = 1
+Soundtestcond = 0
+BPM = 155
