@@ -74,3 +74,11 @@ Authors = Soyo_Oka
 Soundtestpage = 1
 Soundtestcond = 0
 BPM = 135
+
+lump KSSHLE
+Title = Escape_the_Halberd
+Alttitle = Kirby_Super_Star
+Authors = Jun_Ishikawa
+Soundtestpage = 1
+Soundtestcond = 0
+BPM = 239
