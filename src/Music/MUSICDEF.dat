@@ -33,7 +33,7 @@ Alttitle = Mario_Kart_Wii
 Authors = Asuka_Ohta,_Ryo_Nagamatsu
 Soundtestpage = 1
 Soundtestcond = 0
-BPM = 81
+BPM = 161
 
 Lump RACTIM
 Title = Race_Against_Time!
