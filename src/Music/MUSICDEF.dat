@@ -75,6 +75,14 @@ Soundtestpage = 1
 Soundtestcond = 0
 BPM = 135
 
+Lump SMKINV
+Title = Starman
+Alttitle = Super_Mario_kart
+Authors = Soyo_Oka
+Soundtestpage = 1
+Soundtestcond = 0
+BPM = 76
+
 lump KSSHLE
 Title = Escape_the_Halberd
 Alttitle = Kirby_Super_Star
