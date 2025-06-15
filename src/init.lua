@@ -68,3 +68,4 @@ Squigglepants.dofile("HUD/Voting Screen/voting.lua")
 Squigglepants.dofile("HUD/Voting Screen/voted.lua")
 
 --Squigglepants.dofile("Extra/smbfunction.lua")
+Squigglepants.dofile("HUD/music thingie.lua")
