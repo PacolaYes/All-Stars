@@ -1,6 +1,6 @@
 # SRB2: Epic ""mini""games
 A SRB2 addon inspired by WarioWare*, Sonic Mega Collection* and [Epic Minigames](https://www.roblox.com/games/277751860/Epic-Minigames)*!
-Mostly inspired by the Mario Kart games and the 3D platformers (3D world and onwards, I don't like any of the older 3D platformers before that)
+Mostly inspired by the Mario Kart games and the 3D platformers (3D world and onwards, sm64 best mario 3d platformer)
 
 Heavy WIP right now
 Development started on the 24 of may 2025
