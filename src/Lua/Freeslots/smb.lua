@@ -3,6 +3,10 @@ freeslots the retro
 - slude
 */
 
+local function fsCaption(sfx, caption)
+	sfxinfo[freeslot("sfx_"+sfx)].caption = caption
+end
+
 freeslot(
 "SPR_SRSD", 
 "SPR_SRWK",
