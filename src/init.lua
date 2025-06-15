@@ -52,7 +52,7 @@ registerMetatable(mt)
 dofile("functions.lua")
 
 Squigglepants.dofile("Freeslots/voting.lua")
-Squigglepants.dofile("Freeslots/so retro.lua") -- idk what this does but its cool - slude
+Squigglepants.dofile("Freeslots/smb.lua") -- idk what this does but its cool - slude
 
 Squigglepants.dofile("Game/Gametypes/base.lua") -- base of the seperate gametypes
 Squigglepants.dofile("Game/base.lua") -- base of the whole thing
@@ -66,3 +66,5 @@ Squigglepants.dofile("HUD/discordlink.lua")
 
 Squigglepants.dofile("HUD/Voting Screen/voting.lua")
 Squigglepants.dofile("HUD/Voting Screen/voted.lua")
+
+--Squigglepants.dofile("Extra/smbfunction.lua")
