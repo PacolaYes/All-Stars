@@ -39,7 +39,7 @@ function Squigglepants.addGametype(t)
 	rawset(_G, "SGT_"+t.identifier, curIdentifier)
 	
 	Squigglepants.gametypes[curIdentifier] = Squigglepants.copy(t)
-	Squigglepants.tols = $ | t.typeoflevel
+	Squigglepants.gametypes.tols = $ | t.typeoflevel
 end
 
 function Squigglepants.getGametypeDef(num)
