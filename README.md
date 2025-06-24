@@ -4,7 +4,7 @@ Sonic Robo Blast: All-Stars (also known as SRB2: AS or simply AS) is a gametype 
 
 ## Reviews
 ><figure>
-><img src="assets/pineappleugly.png" width="20" height="20">
+><img src="Assets/pineappleugly.png" width="20" height="20">
 ><figcaption>Banana</figcaption>
 ></figure>
 ~ @PacolaYes
