@@ -3,11 +3,21 @@
 Sonic Robo Blast: All-Stars (also known as SRB2: AS or simply AS) is a gametype _Mega Collection_ that aims to bring some form of "non-brainrotted" content to the SRB2 MS/MB (and to be a fun addon to play obviously)
 
 ## Reviews
+
 ><figure>
 ><img src="Assets/pineappleugly.png" width="20" height="20">
 ><figcaption>Banana</figcaption>
 ></figure>
-~ @PacolaYes
+
+~ [@Pacola](https://mb.srb2.org/members/pacola.11358/)
+
+>"best thing since sliced bread"
+
+~ [@qwertyuiopasdfghjkl](https://mb.srb2.org/members/qwertyuiopasdfghjkl.29069/)
+
+> cured my fishes terminal illness
+
+~ [@idiot](https://mb.srb2.org/members/idiot.24943/)
 
 ##  (WIP) Story
 Eggman has invited _Sonic & Friends_ to star in his TV show to keep people watching cable TV (and for people to waste money in it). The starring show he had planned to rerun into hell isn't enough to get viewers hooked so he has to spice the content up a bit...
