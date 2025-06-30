@@ -32,8 +32,6 @@ local playerVars = {
 }
 
 Squigglepants = $.copyTo(globalVars, $)
-
-local voteScreen = Squigglepants.voteScreen
 local HUD = Squigglepants.hud
 
 local function isSpecialStage(map)
@@ -109,6 +107,7 @@ function Squigglepants.startVote(mapBlacklist, gtBlacklist)
 		foundMap[mapList[i].map] = true
 	end
 	
+	local voteScreen = Squigglepants.voteScreen
 	voteScreen.tics = voteTime
 	voteScreen.selectedMaps = mapList
 	voteScreen.isVoting = true
@@ -123,6 +122,7 @@ function Squigglepants.startVote(mapBlacklist, gtBlacklist)
 end
 
 local function checkHUD(p, name)
+	if not P_IsLocalPlayer(p) then return false end
 	local curState, nextState = HUD.getCurrentState()
 	
 	return curState ~= name
@@ -132,6 +132,8 @@ end
 
 -- handle player controls !
 addHook("PreThinkFrame", function()
+	local voteScreen = Squigglepants.voteScreen
+	
 	if not Squigglepants.inMode()
 	or not voteScreen.isVoting then
 		return
@@ -176,11 +178,11 @@ addHook("PreThinkFrame", function()
 				vote.hasSelected = false
 			end
 			
+			selectedPlayers[#selectedPlayers+1] = p
+			
 			if checkHUD(p, "votingScreen-voteShowcase") then
 				HUD.changeState("votingScreen-voteShowcase")
 			end
-			
-			selectedPlayers[#selectedPlayers+1] = p
 		end
 		
 		vote.lastbuttons = p.cmd.buttons
@@ -210,6 +212,7 @@ addHook("PreThinkFrame", function()
 		Squigglepants.gametype = map.gametype
 		G_SetCustomExitVars(map.map, 2)
 		G_ExitLevel()
+		print("GO!")
 	end
 end)
 

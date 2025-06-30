@@ -20,10 +20,6 @@ addHook("MapChange", function()
 	end
 end)
 
-/*addHook("MapLoad", function()
-	Squigglepants.startVote()
-end)*/
-
 /*addHook("PlayerSpawn", function(p)
 	p.squigglepants = Squigglepants.copy(ogVars.player)
 end)*/
