@@ -49,7 +49,7 @@ registerMetatable(mt)
 
 -- actual dofiling
 -- until it becomes Squigglepants.dofiling, atleast
-dofile("functions.lua")
+dofile("Functions/load.lua")
 
 Squigglepants.dofile("Freeslots/voting.lua")
 Squigglepants.dofile("Freeslots/smb.lua") -- idk what this does but its cool - slude
