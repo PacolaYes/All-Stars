@@ -88,13 +88,12 @@ local function getLength(v, text, scale, font)
 	font = $ ~= nil and tostring($):upper() or "STCFN"
 	
 	if not cachedLength[font] then
-		cachedLenght[font] = {}
+		cachedLength[font] = {}
 	end
 	
-	local textLength = text:len()
 	local length = 0
 	if not cachedLength[font][text] then
-		for i = 1, textLength do
+		for i = 1, text:len() do
 			local curLetter = string.format("%03d", tostring(text:byte(i, i)))
 			local patch = Squigglepants.getPatch(v, font + curLetter)
 			
@@ -182,27 +181,74 @@ addHook("HUD", function(v, p)
 	local musicInfo = NowPlaying.musicinfo[nowPlaying.curTune]
 	local gameInfo = NowPlaying.gameinfo[musicInfo.game or "null"] or {}
 	
-	local patchName = gameInfo.console and gameInfo.console:upper() + "BG" or "MISSING"
-	local patch = Squigglepants.getPatch(v, patchName)
+	local console = gameInfo.console and gameInfo.console:upper() or nil
+	local part1 = Squigglepants.getPatch(v, (console and console + "CONT" or "MISSING") )
+	local part2 = Squigglepants.getPatch(v, (console and console + "END" or "MISSING") )
 	
-	local xAnim = 320 * FU + ease.linear(
+	local biggestLength = max(musicInfo.name:len(), musicInfo.authors:len())
+	if musicInfo.game then
+		biggestLength = max($, musicInfo.game:len())
+	end
+	
+	local contCount = biggestLength / (part1.width / 4) + 1
+	
+	local xAnim = 320 * FU - ease.linear(
 		FixedDiv(
 			min(nowPlaying.time, inoutTime), inoutTime
 		),
 		0,
-		-patch.width * FU
+		(part1.width * contCount + part2.width) * FU
 	)
 	
 	local flags = V_SNAPTOTOP|V_SNAPTORIGHT|V_PERPLAYER|V_HUDTRANS
+	for i = 1, contCount do
+		v.draw(
+			FixedRound(xAnim)/FU + (part1.width * i),
+			0,
+			part1,
+			flags
+		)
+	end
 	v.draw(
 		FixedRound(xAnim)/FU,
 		0,
-		patch,
+		part2,
 		flags
 	)
 	
-	local gameName = musicInfo.game
-	drawText(v, xAnim + 40*FU, 6*FU, FU/2, gameName, flags)
+	local textX = xAnim + part2.width * (FU/2)
+	drawText(v, textX, 6*FU, FU/2, musicInfo.name, flags)
+	drawText(v, textX, 12*FU, FU/2, musicInfo.authors, flags)
+	if musicInfo.game then
+		drawText(v, textX, 18*FU, FU/2, musicInfo.game, flags)
+	end
+	
+	local iconThingie = Squigglepants.getPatch(v, "TEST_TEST")
+	local iconScale = FU/2
+	local iconX = textX - part2.width * (FU/2) - iconThingie.width * (iconScale - iconScale / 4)
+	v.drawCropped(
+		iconX, 0,
+		iconScale, iconScale,
+		iconThingie, flags,
+		nil, 0, 0,
+		iconThingie.width * FU, (iconThingie.height - 9) * FU
+	)
+	for i = (iconThingie.height - 9), iconThingie.height do
+		local hudtrans = v.localTransFlag()
+		local trans = (hudtrans >> FF_TRANSSHIFT) + (9 - (iconThingie.height - i))
+		
+		if trans > 9 then break end -- higher than 9 means that the rest wouldn't draw anyways :P
+		//print(i + " = " + (trans >> FF_TRANSSHIFT))
+		v.drawCropped(
+			iconX, i * iconScale,
+			iconScale, iconScale,
+			iconThingie, (flags & ~V_HUDTRANS)|(trans << FF_TRANSSHIFT),
+			nil, 0, i * FU,
+			iconThingie.width * FU, FU
+		)
+	end
+	
+	-- thinker stuff below
 	
 	nowPlaying.time = $ + nowPlaying.add
 	
