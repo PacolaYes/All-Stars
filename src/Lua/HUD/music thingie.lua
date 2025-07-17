@@ -52,6 +52,10 @@ local GAMEDEF = {
 		console = "SNES",
 		name = "SMRPG"
 	},
+	["The Flintstones"] = {
+		console = "SNES",
+		name = "FLINT"
+	},
 	["Mario Kart Wii"] = {
 		console = "Wii",
 		name = "MKWII"
