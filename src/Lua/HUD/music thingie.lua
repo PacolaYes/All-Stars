@@ -17,15 +17,15 @@ local MUSICDEF = { -- i lov auto generation :D
 		game = "Mario Kart Wii",
 		authors = "Asuka Ohta, Ryo Nagamatsu"
 	},
-	RACTIM = {
+	KSSHLE = {
+		name = "Escape the Halberd"
+		game = "Kirby Super Star"
+		authors = "Jun Ishikawa"
+	},
+	POKRAT = {
 		name = "Race Against Time!",
 		game = "Plok",
 		authors = "Tim Follin, Geoff Follin"
-	},
-	MUSBOX = {
-		name = "Music Box",
-		game = "Super Mario All-Stars",
-		authors = "Koji Kondo"
 	},
 	PASWRD = {
 		name = "Password Screen",
@@ -44,9 +44,9 @@ local GAMEDEF = {
 		console = "SNES",
 		name = "PLOK"
 	},
-	["Super Mario All-Stars"] = {
+	["Kirby Super Star"] = {
 		console = "SNES",
-		name = "SMAS"
+		name = "KSS"
 	},
 	["Super Mario RPG"] = {
 		console = "SNES",

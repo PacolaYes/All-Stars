@@ -35,21 +35,13 @@ Soundtestpage = 1
 Soundtestcond = 0
 BPM = 161
 
-Lump RACTIM
+Lump POKRAT
 Title = Race_Against_Time!
 Alttitle = Plok
 Authors = Tim_Follin,_Geoff_Follin
 Soundtestpage = 1
 Soundtestcond = 0
 BPM = 165
-
-Lump MUSBOX
-Title = Music_Box
-Alttitle = Super_Mario_All-Stars
-Authors = Koji_Kondo
-Soundtestpage = 1
-Soundtestcond = 0
-BPM = 51
 
 Lump PASWRD
 Title = Password_Screen
@@ -67,22 +59,6 @@ Soundtestpage = 1
 Soundtestcond = 0
 BPM = 62
 
-Lump SMKDON
-Title = Donut_Plains
-Alttitle = Super_Mario_kart
-Authors = Soyo_Oka
-Soundtestpage = 1
-Soundtestcond = 0
-BPM = 135
-
-Lump SMKINV
-Title = Starman
-Alttitle = Super_Mario_kart
-Authors = Soyo_Oka
-Soundtestpage = 1
-Soundtestcond = 0
-BPM = 76
-
 lump KSSHLE
 Title = Escape_the_Halberd
 Alttitle = Kirby_Super_Star
@@ -90,3 +66,11 @@ Authors = Jun_Ishikawa
 Soundtestpage = 1
 Soundtestcond = 0
 BPM = 239
+
+Lump RPGSAD
+Title = Sad_Song
+Alttitle = Super_Mario_RPG
+Authors = Yoko_Shimomura
+Soundtestpage = 1
+Soundtestcond = 0
+BPM = 55
