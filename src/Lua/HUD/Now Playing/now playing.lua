@@ -6,65 +6,8 @@
 local inoutTime = TICRATE -- time it takes for the now playing thing show up and go away
 local holdTime = 2*TICRATE -- time it stays on screen for
 
-local MUSICDEF = { -- i lov auto generation :D
-	MK8LVL = {
-		name = "Online Menu",
-		game = "Mario Kart 8",
-		authors = "Ryo Magamatsu, Atsuko Asahi, Shiho Fuji, Yasuaki Iwata"
-	},
-	MKWLVL = {
-		name = "Wi-Fi Menu",
-		game = "Mario Kart Wii",
-		authors = "Asuka Ohta, Ryo Nagamatsu"
-	},
-	KSSHLE = {
-		name = "Escape the Halberd"
-		game = "Kirby Super Star"
-		authors = "Jun Ishikawa"
-	},
-	POKRAT = {
-		name = "Race Against Time!",
-		game = "Plok",
-		authors = "Tim Follin, Geoff Follin"
-	},
-	PASWRD = {
-		name = "Password Screen",
-		game = "The Flintstones",
-		authors = "Dean Evans"
-	},
-	UNUSD2 = {
-		name = "Unused Song 2",
-		game = "The Flintstones",
-		authors = "Dean Evans"
-	}
-}
-
-local GAMEDEF = {
-	["Plok"] = {
-		console = "SNES",
-		name = "PLOK"
-	},
-	["Kirby Super Star"] = {
-		console = "SNES",
-		name = "KSS"
-	},
-	["Super Mario RPG"] = {
-		console = "SNES",
-		name = "SMRPG"
-	},
-	["The Flintstones"] = {
-		console = "SNES",
-		name = "FLINT"
-	},
-	["Mario Kart Wii"] = {
-		console = "Wii",
-		name = "MKWII"
-	},
-	["Mario Kart 8"] = {
-		console = "WiiU",
-		name = "MK8"
-	}
-}
+local defs = Squigglepants.dofile("HUD/Now Playing/definitions.lua")
+local MUSICDEF, GAMEDEF = defs[1], defs[2]
 
 Squigglepants.NowPlaying = {
 	musicinfo = MUSICDEF,
@@ -183,7 +126,13 @@ addHook("HUD", function(v, p)
 	
 	local NowPlaying = Squigglepants.NowPlaying
 	local musicInfo = NowPlaying.musicinfo[nowPlaying.curTune]
-	local gameInfo = NowPlaying.gameinfo[musicInfo.game or "null"] or {}
+	local gameInfo = NowPlaying.gameinfo[musicInfo.game or "null"] or nil
+	
+	if not gameInfo then
+		local nextMus = nowPlaying.nextTune
+		nowPlaying = Squigglepants.copy(ogNP)
+		nowPlaying.nextTune = nextMus
+	end
 	
 	local console = gameInfo.console and gameInfo.console:upper() or nil
 	local part1 = Squigglepants.getPatch(v, (console and console + "CONT" or "MISSING") )
@@ -227,7 +176,13 @@ addHook("HUD", function(v, p)
 		drawText(v, textX, 18*FU, FU/2, musicInfo.game, flags)
 	end
 	
-	local iconThingie = Squigglepants.getPatch(v, "TEST_TEST")
+	local iconName = (musicInfo.img or gameInfo.img or gameInfo.name or "TEST") + "_" + (gameInfo.name or "TEST")
+	
+	if not v.patchExists(iconName) then
+		iconName = "TEST_TEST"
+	end
+	
+	local iconThingie = Squigglepants.getPatch(v, iconName)
 	local iconScale = FU/2
 	local iconX = textX - part2.width * (FU/2) - iconThingie.width * (iconScale - iconScale / 4)
 	v.drawCropped(
@@ -242,7 +197,7 @@ addHook("HUD", function(v, p)
 		local trans = (hudtrans >> FF_TRANSSHIFT) + (9 - (iconThingie.height - i))
 		
 		if trans > 9 then break end -- higher than 9 means that the rest wouldn't draw anyways :P
-		//print(i + " = " + (trans >> FF_TRANSSHIFT))
+		
 		v.drawCropped(
 			iconX, i * iconScale,
 			iconScale, iconScale,
