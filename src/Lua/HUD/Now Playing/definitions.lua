@@ -40,18 +40,22 @@ local GAMEDEF = {
 	["The Flintstones"] = {
 		console = "SNES",
 		name = "FLINT",
+		img = "FRED",
 	},
 	["Mario Kart Wii"] = {
 		console = "Wii",
 		name = "MKWII",
+		img = "MNL",
 	},
 	["Mario Kart 8"] = {
 		console = "WiiU",
 		name = "MK8",
+		img = "MARIO",
 	},
-	Plok = {
+	["Plok"] = {
 		console = "SNES",
 		name = "PLOK",
+		img = "PLOK",
 	},
 	["Kirby Super Star"] = {
 		console = "SNES",
