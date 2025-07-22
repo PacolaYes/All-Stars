@@ -72,6 +72,7 @@ jobs:
     
     - name: send thing to the action tab
       uses: actions/upload-artifact@v4
+      id: artifact-upload
       with:
         name: Spongebob Squigglepants INDEV
         path: build/SpongebobSquigglepants-INDEV-${{ env.NOW }}.pk3
@@ -90,3 +91,10 @@ jobs:
         message: "Successful commit to **${{ github.ref_name }}**"
         template: "avatar-with-link"
         include-extras: true
+
+    - name: send the artifact link :P
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      uses: "Ilshidur/action-discord@0c4b27844ba47cb1c7bee539c8eead5284ce9fa9"
+      with:
+        args: "Artifact can be found at: ${{ steps.artifact-upload.outputs.artifact-url }}"
