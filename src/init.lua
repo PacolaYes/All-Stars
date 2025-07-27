@@ -71,3 +71,5 @@ Squigglepants.dofile("HUD/Voting Screen/voted.lua")
 Squigglepants.dofile("HUD/Now Playing/now playing.lua")
 
 --Squigglepants.dofile("Extra/smbfunction.lua")
+Squigglepants.dofile("Extra/smbfunction.lua")
+Squigglepants.dofile("HUD/Now Playing/now playing.lua")
