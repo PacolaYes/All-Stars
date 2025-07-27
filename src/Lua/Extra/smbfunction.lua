@@ -2,7 +2,7 @@
 mobjinfo[MT_SO_RETRO] = {
 	--$Title Mario
 	--$Sprite SRSDA0
-	--$Category Epic Minigames
+	--$Category All-Stars
 	--$Angled
 	doomednum = 3200,
 	spawnhealth = 1,
