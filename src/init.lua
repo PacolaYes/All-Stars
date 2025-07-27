@@ -53,7 +53,7 @@ dofile("Functions/load.lua")
 
 Squigglepants.dofile("Freeslots/voting.lua")
 Squigglepants.dofile("Freeslots/smb.lua") -- idk what this does but its cool - slude
-Squigglepants.dofile("Freeslots/easteregg.lua") -- doesnt wanna work rn :P
+Squigglepants.dofile("Freeslots/hidden.lua") -- doesnt wanna work rn :P
 
 Squigglepants.dofile("Game/Gametypes/base.lua") -- base of the seperate gametypes
 Squigglepants.dofile("Game/base.lua") -- base of the whole thing
@@ -70,6 +70,6 @@ Squigglepants.dofile("HUD/Voting Screen/voted.lua")
 
 Squigglepants.dofile("HUD/Now Playing/now playing.lua")
 
---Squigglepants.dofile("Extra/smbfunction.lua")
 Squigglepants.dofile("Extra/smbfunction.lua")
+Squigglepants.dofile("Extra/hiddens.lua")
 Squigglepants.dofile("HUD/Now Playing/now playing.lua")

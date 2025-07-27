@@ -1,18 +1,3 @@
-/*
-freeslots the secrets
-- slude
-
-max doomednum is 65535
-the doomednum is related to the object ex. lonely goombas channel was made on the 13th of the 1st month in 20*13* 
-*/
-freeslot(
-"SPR_LLGM", 
-
-"MT_GBAGOOMBA",
-
-"S_GBAGOOMBA"
-)
-
 mobjinfo[MT_GBAGOOMBA] = {
 	--$Title Lonely Goomba
 	--$Sprite LLGMA0

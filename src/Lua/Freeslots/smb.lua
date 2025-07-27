@@ -20,5 +20,5 @@ freeslot(
 )
 
 fsCaption("smbded", "Mario Death")
-fsCaption("smbjmp", "Mario Jump")
+fsCaption("smbjum", "Mario Jump")
 fsCaption("smbski", "Mario Skid")

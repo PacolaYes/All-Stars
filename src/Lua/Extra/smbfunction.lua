@@ -13,9 +13,8 @@ end
 
 mobjinfo[MT_SO_RETRO] = {
 	--$Title Mario
-	--$Sprite SRSDA0
+	--$Sprite SRMRARAL
 	--$Category All-Stars
-	--$Sprite SRMRA0
 	--$Category Spongebob Squigglepants
 	--$Angled
 	doomednum = 3200,
@@ -26,7 +25,7 @@ mobjinfo[MT_SO_RETRO] = {
 	deathsound = sfx_smbded,
 	radius = 8*FU,
 	height = 16*FU,
-	activesound = sfx_smbjmp,
+	activesound = sfx_smbjum,
 	flags = MF_SPECIAL|MF_RUNSPAWNFUNC
 }
 
@@ -110,7 +109,7 @@ addHook("MobjThinker", function(mo)
 	
 	if mo.state == S_SR_WALK then
 		if mo.jumptics > 0 then
-			S_StartSound(mo, sfx_smbjmp)
+			S_StartSound(mo, sfx_smbjum)
 			mo.state = S_SR_JUMP
 			P_SetObjectMomZ(mo, JUMP_VEL)
 			return
