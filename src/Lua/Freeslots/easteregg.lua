@@ -1,8 +1,10 @@
 /*
 freeslots the secrets
 - slude
+
+max doomednum is 65535
+the doomednum is related to the object ex. lonely goombas channel was made on the 13th of the 1st month in 20*13* 
 */
-/*
 freeslot(
 "SPR_LLGM", 
 
@@ -16,7 +18,7 @@ mobjinfo[MT_GBAGOOMBA] = {
 	--$Sprite LLGMA0
 	--$Category All-Stars
 	--$Angled
-	doomednum = 3200,
+	doomednum = 13113, -- 13/01/13
 	radius = 16*FU,
 	height = 48*FU,
 	flags = MF_SCENERY,
@@ -27,5 +29,4 @@ states[S_GBAGOOMBA] = {
     sprite = SPR_LLGM,
     frame = A
 }
-*/
 -- doesnt seem to work for some reason...
