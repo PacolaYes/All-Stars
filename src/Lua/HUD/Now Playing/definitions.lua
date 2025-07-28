@@ -34,6 +34,11 @@ local MUSICDEF = {
 		game = "Super Mario RPG",
 		authors = "Yoko Shimomura",
 	},
+	SMGCOS = {
+		name = "Cosmic Clones",
+		game = "Super Mario Galaxy 2",
+		authors = "Takeshi Hama, Mahito Yokota, Asuka Hayazaki",
+	},
 }
 
 local GAMEDEF = {
@@ -65,6 +70,11 @@ local GAMEDEF = {
 	["Super Mario RPG"] = {
 		console = "SNES",
 		name = "SMRPG",
+	},
+	["Super Mario Galaxy 2"] = {
+		console = "Wii",
+		name = "SMG2",
+		img = "MARIO"
 	},
 }
 

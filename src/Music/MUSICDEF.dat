@@ -74,3 +74,11 @@ Authors = Yoko_Shimomura
 Soundtestpage = 1
 Soundtestcond = 0
 BPM = 55
+
+Lump SMGCOS
+Title = Cosmic_Clones
+Alttitle = Super_Mario_Galaxy_2
+Authors = Takeshi_Hama,_Mahito_Yokota,_Asuka_Hayazaki
+Soundtestpage = 1
+Soundtestcond = 0
+BPM = 154
