@@ -7,13 +7,13 @@
 freeslot("TOL_SQUIGGLEPANTS")
 
 G_AddGametype({ -- get us our gametype
-    name = "SRB2: Epic Minigames",
+    name = "SRB2: All-Stars",
     identifier = "squigglepants",
     typeoflevel = TOL_COOP|TOL_SQUIGGLEPANTS,
     rules = GTR_EMERALDTOKENS|GTR_EMERALDHUNT|GTR_SPAWNENEMIES,
     intermissiontype = int_none,
     headercolor = 103,
-    description = "temp"
+    description = "doo doo fart"
 })
 
 rawset(_G, "Squigglepants", { -- and our variable! below is also variable stuff
