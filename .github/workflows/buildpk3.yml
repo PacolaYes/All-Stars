@@ -8,6 +8,8 @@ on:
         - '**.md'
         - '.github/**'
         - '.gitignore'
+        - '**.ase'
+        - '**.aseprite'
   pull_request:
     branches:
         - main
