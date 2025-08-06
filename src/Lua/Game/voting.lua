@@ -31,8 +31,7 @@ local playerVars = {
 	}
 }
 
----@diagnostic disable-next-line: exp-in-action, malformed-number, miss-symbol, unknown-symbol
-Squigglepants = $.copyTo(globalVars, $)
+Squigglepants = $.copyTo(globalVars, $) ---@diagnostic disable-line: exp-in-action, malformed-number, miss-symbol, unknown-symbol
 local HUD = Squigglepants.hud
 
 local function isSpecialStage(map)
@@ -146,8 +145,7 @@ addHook("PreThinkFrame", function()
 		if not (p.realmo and p.realmo.valid) then continue end
 		
 		playerList[#playerList+1] = p
----@diagnostic disable-next-line: undefined-field
-		local sp = p.squigglepants
+		local sp = p.squigglepants ---@diagnostic disable-line: undefined-field
 		local vote = sp.votingScreen
 		
 		if not vote.hasSelected then
@@ -165,7 +163,6 @@ addHook("PreThinkFrame", function()
 			
 			if (p.cmd.buttons & BT_JUMP)
 			and not (vote.lastbuttons & BT_JUMP) then
----@diagnostic disable-next-line: param-type-mismatch
 				S_StartSound(nil, sfx_spvsel, p) -- why vs code tweaking on this
 				vote.hasSelected = true
 			end
@@ -177,7 +174,6 @@ addHook("PreThinkFrame", function()
 			
 			if (p.cmd.buttons & BT_SPIN)
 			and not (vote.lastbuttons & BT_SPIN) then
----@diagnostic disable-next-line: param-type-mismatch
 				S_StartSound(nil, sfx_thok, p)
 				vote.hasSelected = false
 			end
@@ -209,8 +205,7 @@ addHook("PreThinkFrame", function()
 			return not (p and p.valid)
 			or not (p.realmo and p.realmo.valid)
 		end)
----@diagnostic disable-next-line: undefined-field
-		local voteNum = rp.squigglepants.votingScreen.selected
+		local voteNum = rp.squigglepants.votingScreen.selected ---@diagnostic disable-line: undefined-field
 		local maps = voteScreen.selectedMaps
 		local map = maps[voteNum] or Squigglepants.getRandomMap()
 		

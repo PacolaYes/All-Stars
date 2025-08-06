@@ -12,8 +12,7 @@ function A_MarioDecide(mo)
 	mo.jumptics = max(P_RandomRange(-maxJumpTics * 2, maxJumpTics), 0)
 end
 
----@diagnostic disable-next-line: missing-fields
-mobjinfo[MT_SO_RETRO] = {
+mobjinfo[MT_SO_RETRO] = { ---@diagnostic disable-line: missing-fields
 	--$Title Mario
 	--$Sprite SRMRARAL
 	--$Category All-Stars
@@ -110,8 +109,7 @@ addHook("MobjThinker", function(mo)
 	
 	if speed >= MAX_WALKSPEED
 	or mo.state == S_SR_WALK and mo.walktics <= 0 then
----@diagnostic disable-next-line: param-type-mismatch
-		P_Thrust(mo, mo.angle, -FixedMul(BASE_DEACCEL, mo.scale))
+		P_Thrust(mo, mo.angle, -FixedMul(BASE_DEACCEL, mo.scale)) ---@diagnostic disable-line: param-type-mismatch
 		
 		if R_PointToDist2(0, 0, mo.momx, mo.momy) > speed then -- overshot it
 			mo.state = S_SR_STAND
@@ -162,8 +160,7 @@ addHook("MobjThinker", function(mo)
 	end
 	
 	local holdingJump = mo.jumptics > 0 and true or false -- simulate holding jump
----@diagnostic disable-next-line: param-type-mismatch
-	P_SetObjectMomZ(mo, -(holdingJump and HOLDA_GRAV or BASE_GRAV), true)
+	P_SetObjectMomZ(mo, -(holdingJump and HOLDA_GRAV or BASE_GRAV), true) ---@diagnostic disable-line: param-type-mismatch
 	
 	if mo.z+mo.height < mo.floorz and not (mo.eflags & MFE_VERTICALFLIP)
 	or mo.z > mo.ceilingz and (mo.eflags & MFE_VERTICALFLIP) then

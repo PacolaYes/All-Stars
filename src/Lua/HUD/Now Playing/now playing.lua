@@ -97,12 +97,14 @@ addHook("MapChange", function()
 	nowPlaying = Squigglepants.copy(ogNP)
 end)
 
+---comment
+---@param _ any
+---@param new string
 addHook("MusicChange", function(_, new)
 	if gamestate ~= GS_LEVEL
 	or gametype ~= GT_SQUIGGLEPANTS then return end
 	
----@diagnostic disable-next-line: undefined-global, unknown-symbol
-	new = $:upper()
+	new = $:upper() ---@diagnostic disable-line: undefined-global, unknown-symbol
 	if not Squigglepants.NowPlaying.musicinfo[new] then return end
 	
 	nowPlaying.nextTune = new
@@ -135,8 +137,7 @@ addHook("HUD", function(v, p)
 		nowPlaying.nextTune = nextMus
 	end
 	
----@diagnostic disable-next-line: need-check-nil, undefined-field
-	local console = gameInfo.console and gameInfo.console:upper() or nil
+	local console = gameInfo.console and gameInfo.console:upper() or nil ---@diagnostic disable-line: need-check-nil, undefined-field
 	local part1 = Squigglepants.getPatch(v, (console and console + "CONT" or "MISSING") )
 	local part2 = Squigglepants.getPatch(v, (console and console + "END" or "MISSING") )
 	
@@ -149,8 +150,7 @@ addHook("HUD", function(v, p)
 	
 	local xAnim = 320 * FU - ease.linear(
 		FixedDiv(
----@diagnostic disable-next-line: param-type-mismatch
-			min(nowPlaying.time, inoutTime), inoutTime
+			min(nowPlaying.time, inoutTime), inoutTime ---@diagnostic disable-line: param-type-mismatch
 		),
 		0,
 		(part1.width * contCount + part2.width) * FU
@@ -179,8 +179,7 @@ addHook("HUD", function(v, p)
 		drawText(v, textX, 18*FU, FU/2, musicInfo.game, flags)
 	end
 	
----@diagnostic disable-next-line: need-check-nil, undefined-field
-	local iconName = (musicInfo.img or gameInfo.img or gameInfo.name or "TEST") + "_" + (gameInfo.name or "TEST")
+	local iconName = (musicInfo.img or gameInfo.img or gameInfo.name or "TEST") + "_" + (gameInfo.name or "TEST") ---@diagnostic disable-line: need-check-nil, undefined-field
 	
 	if not v.patchExists(iconName) then
 		iconName = "TEST_TEST"

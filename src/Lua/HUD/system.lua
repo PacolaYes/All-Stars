@@ -38,6 +38,8 @@ local hudStates = {
 -- type: the hud type, example being "game", also defaults to "game"
 -- [variable]: sets a variable that'll you be able to access through the self argument in the function
 -- WARNING: these will all be ran through a HUD hook !! dont do bad stuff or itll probably desynch :P
+
+---@param t table
 function Squigglepants.hud.addState(t)
 	if t == nil
 	or t.name == nil then return end
@@ -60,6 +62,8 @@ function Squigglepants.hud.addState(t)
 end
 
 -- changes the state to newState, if available
+---@param newState string?
+---@param force boolean?
 function Squigglepants.hud.changeState(newState, force)
 	if newState == nil then return end
 	
@@ -92,12 +96,16 @@ end
 -- idk why make this a function :P
 -- returns the current state and the next one, if any
 -- TODO: maybe figure out a better name to indicate nextState is here too
+---comment
+---@return string | nil
+---@return string | nil
 function Squigglepants.hud.getCurrentState()
 	return curState, nextState
 end
 
--- should only return "enter", "exit" and nil
+-- should only return "enter", "exit" and nil;
 -- nil is when the state isn't entering nor exiting
+---@return string | nil
 function Squigglepants.hud.getCurrentPhase()
 	return statePhase
 end
@@ -116,8 +124,7 @@ local function triggerState(hudtype, v, ...)
 			Squigglepants.hud.changeState(nextState, true)
 			state = hudStates[hudtype][curState]
 		else
----@diagnostic disable-next-line: cast-local-type
-			statePhase = nil
+			statePhase = nil ---@diagnostic disable-line: cast-local-type
 		end
 	end
 	
