@@ -92,6 +92,8 @@ end
 
 -- reminder to self: update this if changing the top one
 -- otherwise just go read the top one :P
+
+-- starts a vote, preferred as only setting
 function Squigglepants.startVote(mapBlacklist, gtBlacklist)
 	if not Squigglepants.inMode() then return end
 	
@@ -181,6 +183,7 @@ addHook("PreThinkFrame", function()
 			selectedPlayers[#selectedPlayers+1] = p
 			
 			if checkHUD(p, "votingScreen-voteShowcase") then
+				print(voteScreen.isVoting)
 				HUD.changeState("votingScreen-voteShowcase")
 			end
 		end
@@ -209,7 +212,7 @@ addHook("PreThinkFrame", function()
 		local maps = voteScreen.selectedMaps
 		local map = maps[voteNum] or Squigglepants.getRandomMap()
 		
-		Squigglepants.gametype = map.gametype
+		Squigglepants.nextgametype = map.gametype
 		G_SetCustomExitVars(map.map, 2)
 		G_ExitLevel()
 		print("GO!")

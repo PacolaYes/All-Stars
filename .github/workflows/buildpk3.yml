@@ -8,6 +8,7 @@ on:
         - '**.md'
         - '.github/**'
         - '.gitignore'
+        - '.vscode/**'
         - '**.ase'
         - '**.aseprite'
   pull_request:
@@ -16,7 +17,10 @@ on:
     paths-ignore:
         - '**.md'
         - '.github/**'
+        - '.vscode/**'
         - '.gitignore'
+        - '**.ase'
+        - '**.aseprite'
   workflow_dispatch:
 
 jobs:

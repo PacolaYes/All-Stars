@@ -43,6 +43,7 @@ local hudStates = {
 function Squigglepants.hud.addState(t)
 	if t == nil
 	or t.name == nil then return end
+	print(t.name)
 	
 	local baseCopy = Squigglepants.copy(baseState)
 	if t.type == nil then
@@ -65,6 +66,7 @@ end
 ---@param newState string?
 ---@param force boolean?
 function Squigglepants.hud.changeState(newState, force)
+	print(newState)
 	if newState == nil then return end
 	
 	local foundState = false
@@ -76,6 +78,7 @@ function Squigglepants.hud.changeState(newState, force)
 	end
 	if not foundState then return end
 	
+	print("it exists :P")
 	if newState == curState then
 		force = true
 	end

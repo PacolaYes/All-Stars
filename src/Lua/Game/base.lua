@@ -5,15 +5,23 @@
 -- -pac
 
 Squigglepants.gametype = 1
+Squigglepants.nextgametype = 1
 local ogVars = Squigglepants.require("Game/voting.lua")
 
 addHook("MapChange", function()
 	---@diagnostic disable-next-line: exp-in-action, malformed-number, miss-symbol, unknown-symbol
 	Squigglepants = $.copyTo(ogVars.global, $) -- reset variables that we should :D
-	Squigglepants.hud.changeState("base", true)
 	
 	if gametype ~= GT_SQUIGGLEPANTS then
 		Squigglepants.gametype = 1 -- reset it back :D
+		Squigglepants.hud.changeState("base", true)
+	else
+		Squigglepants.hud.changeState(
+			Squigglepants.getGametypeDef(Squigglepants.nextgametype).hud,
+			true
+		)
+
+		Squigglepants.gametype = Squigglepants.nextgametype
 	end
 	
 	for p in players.iterate do

@@ -9,6 +9,7 @@
         "int_none",
         "SGT_COOP",
         "ease",
-        "tofixed"
+        "tofixed",
+        "SGT_RACE"
     ]
 }
