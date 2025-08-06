@@ -8,6 +8,7 @@ Squigglepants.gametype = 1
 local ogVars = Squigglepants.require("Game/voting.lua")
 
 addHook("MapChange", function()
+---@diagnostic disable-next-line: exp-in-action, malformed-number, miss-symbol, unknown-symbol
 	Squigglepants = $.copyTo(ogVars.global, $) -- reset variables that we should :D
 	Squigglepants.hud.changeState("base", true)
 	
@@ -16,6 +17,7 @@ addHook("MapChange", function()
 	end
 	
 	for p in players.iterate do
+---@diagnostic disable-next-line: inject-field
 		p.squigglepants = Squigglepants.copy(ogVars.player)
 	end
 end)

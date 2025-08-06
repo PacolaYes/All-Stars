@@ -1,3 +1,4 @@
+---@diagnostic disable: missing-fields
 mobjinfo[MT_GBAGOOMBA] = {
 	--$Title Lonely Goomba
 	--$Sprite LLGMA0

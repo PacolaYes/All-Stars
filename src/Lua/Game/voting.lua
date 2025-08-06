@@ -31,6 +31,7 @@ local playerVars = {
 	}
 }
 
+---@diagnostic disable-next-line: exp-in-action, malformed-number, miss-symbol, unknown-symbol
 Squigglepants = $.copyTo(globalVars, $)
 local HUD = Squigglepants.hud
 
@@ -145,12 +146,13 @@ addHook("PreThinkFrame", function()
 		if not (p.realmo and p.realmo.valid) then continue end
 		
 		playerList[#playerList+1] = p
+---@diagnostic disable-next-line: undefined-field
 		local sp = p.squigglepants
 		local vote = sp.votingScreen
 		
 		if not vote.hasSelected then
 			if ((p.cmd.sidemove >= 25) and not (vote.lastsidemove >= 25))
-			or ((p.cmd.sidemove <= -25) and not (vote.lastsidemove <= -25))
+			or ((p.cmd.sidemove <= -25) and not (vote.lastsidemove <= -25)) then
 				local add = clamp(p.cmd.sidemove)
 				
 				vote.selected = $+add
@@ -163,7 +165,8 @@ addHook("PreThinkFrame", function()
 			
 			if (p.cmd.buttons & BT_JUMP)
 			and not (vote.lastbuttons & BT_JUMP) then
-				S_StartSound(nil, sfx_spvsel, p)
+---@diagnostic disable-next-line: param-type-mismatch
+				S_StartSound(nil, sfx_spvsel, p) -- why vs code tweaking on this
 				vote.hasSelected = true
 			end
 			
@@ -174,6 +177,7 @@ addHook("PreThinkFrame", function()
 			
 			if (p.cmd.buttons & BT_SPIN)
 			and not (vote.lastbuttons & BT_SPIN) then
+---@diagnostic disable-next-line: param-type-mismatch
 				S_StartSound(nil, sfx_thok, p)
 				vote.hasSelected = false
 			end
@@ -205,6 +209,7 @@ addHook("PreThinkFrame", function()
 			return not (p and p.valid)
 			or not (p.realmo and p.realmo.valid)
 		end)
+---@diagnostic disable-next-line: undefined-field
 		local voteNum = rp.squigglepants.votingScreen.selected
 		local maps = voteScreen.selectedMaps
 		local map = maps[voteNum] or Squigglepants.getRandomMap()

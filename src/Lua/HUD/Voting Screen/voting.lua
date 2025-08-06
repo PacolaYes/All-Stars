@@ -27,14 +27,16 @@ end
 local function thinkFunc(self, v, tics, p)
 	if not p.squigglepants
 	or not voteScreen.isVoting
-	or splitscreen and p == secondarysplitscreen then return end
+	or splitscreen and p == secondarydisplayplayer then return end
 	
 	local vote = p.squigglepants.votingScreen
 	local vote2p
 	local maps = voteScreen.selectedMaps
-	if splitscreen and secondarysplitscreen
-	and secondarysplitscreen.squigglepants then
-		vote2p = secondarysplitscreen.squigglepants.votingScreen
+	if splitscreen and secondarydisplayplayer
+---@diagnostic disable-next-line: undefined-field
+	and secondarydisplayplayer.squigglepants then
+---@diagnostic disable-next-line: undefined-field
+		vote2p = secondarydisplayplayer.squigglepants.votingScreen
 	end
 	
 	local bg = Squigglepants.getPatch(v, "SQUIGGLEPANTS")

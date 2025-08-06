@@ -73,7 +73,7 @@ local function drawText(v, x, y, scale, text, flags, align, font)
 		startp, endp = $2, $1
 		add = -1
 	elseif align == "center" then
-		x = $ - getLength(v, text, scale, font, maxX) / 2
+		x = $ - getLength(v, text, scale, font) / 2
 	end
 	
 	for i = startp, endp, add do
@@ -101,6 +101,7 @@ addHook("MusicChange", function(_, new)
 	if gamestate ~= GS_LEVEL
 	or gametype ~= GT_SQUIGGLEPANTS then return end
 	
+---@diagnostic disable-next-line: undefined-global, unknown-symbol
 	new = $:upper()
 	if not Squigglepants.NowPlaying.musicinfo[new] then return end
 	
@@ -134,6 +135,7 @@ addHook("HUD", function(v, p)
 		nowPlaying.nextTune = nextMus
 	end
 	
+---@diagnostic disable-next-line: need-check-nil, undefined-field
 	local console = gameInfo.console and gameInfo.console:upper() or nil
 	local part1 = Squigglepants.getPatch(v, (console and console + "CONT" or "MISSING") )
 	local part2 = Squigglepants.getPatch(v, (console and console + "END" or "MISSING") )
@@ -147,6 +149,7 @@ addHook("HUD", function(v, p)
 	
 	local xAnim = 320 * FU - ease.linear(
 		FixedDiv(
+---@diagnostic disable-next-line: param-type-mismatch
 			min(nowPlaying.time, inoutTime), inoutTime
 		),
 		0,
@@ -176,6 +179,7 @@ addHook("HUD", function(v, p)
 		drawText(v, textX, 18*FU, FU/2, musicInfo.game, flags)
 	end
 	
+---@diagnostic disable-next-line: need-check-nil, undefined-field
 	local iconName = (musicInfo.img or gameInfo.img or gameInfo.name or "TEST") + "_" + (gameInfo.name or "TEST")
 	
 	if not v.patchExists(iconName) then

@@ -1,3 +1,4 @@
+---@diagnostic disable: missing-fields
 -- figured i'd try using actions for once
 -- -pac
 
@@ -11,6 +12,7 @@ function A_MarioDecide(mo)
 	mo.jumptics = max(P_RandomRange(-maxJumpTics * 2, maxJumpTics), 0)
 end
 
+---@diagnostic disable-next-line: missing-fields
 mobjinfo[MT_SO_RETRO] = {
 	--$Title Mario
 	--$Sprite SRMRARAL
@@ -59,6 +61,15 @@ states[S_SR_SKID] = {
 }
 
 -- because accuracy or something gjgbgghh -pac
+
+---converts value from a SMB one to something SRB2 can use
+---@param block fixed_t | string
+---@param pixel fixed_t | string
+---@param spixel fixed_t | string
+---@param sspixel fixed_t | string
+---@param ssspixel fixed_t | string
+---@param accel boolean?
+---@return fixed_t
 local function convertValue(block, pixel, spixel, sspixel, ssspixel, accel)
 	block = $ and (tonumber($, 16) * FU * 16) or 0
 	pixel = $ and (tonumber($, 16) * FU) or 0
@@ -71,7 +82,7 @@ local function convertValue(block, pixel, spixel, sspixel, ssspixel, accel)
 	if accel then
 		finalVal = FixedMul($, 60*FU / 35)
 	end
-	return finalVal
+	return finalVal ---@type fixed_t
 end
 
 local WALK_ACCEL = convertValue(0, 0, 0, 9, 8, true)
@@ -99,6 +110,7 @@ addHook("MobjThinker", function(mo)
 	
 	if speed >= MAX_WALKSPEED
 	or mo.state == S_SR_WALK and mo.walktics <= 0 then
+---@diagnostic disable-next-line: param-type-mismatch
 		P_Thrust(mo, mo.angle, -FixedMul(BASE_DEACCEL, mo.scale))
 		
 		if R_PointToDist2(0, 0, mo.momx, mo.momy) > speed then -- overshot it
@@ -150,6 +162,7 @@ addHook("MobjThinker", function(mo)
 	end
 	
 	local holdingJump = mo.jumptics > 0 and true or false -- simulate holding jump
+---@diagnostic disable-next-line: param-type-mismatch
 	P_SetObjectMomZ(mo, -(holdingJump and HOLDA_GRAV or BASE_GRAV), true)
 	
 	if mo.z+mo.height < mo.floorz and not (mo.eflags & MFE_VERTICALFLIP)

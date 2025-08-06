@@ -112,10 +112,11 @@ local function triggerState(hudtype, v, ...)
 	
 	if type(state[statePhase]) == "function"
 	and state[statePhase](state, v, stateTics, ...) then
-		if statePhase == "exit"
+		if statePhase == "exit" then
 			Squigglepants.hud.changeState(nextState, true)
 			state = hudStates[hudtype][curState]
 		else
+---@diagnostic disable-next-line: cast-local-type
 			statePhase = nil
 		end
 	end

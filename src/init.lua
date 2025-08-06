@@ -41,7 +41,7 @@ local mt = { -- pls make it so Squigglepants = Squigglepants.sync if its a varia
 		end
 	end,
 	__newindex = newindexFunc,
-	__usedindex = newIndexFunc
+	__usedindex = newindexFunc
 }
 
 setmetatable(Squigglepants, mt) -- note for self: maybe make a reverse of this for sync so sync absolutely CAN'T get functions if we modify it directly? might be a bit unnecessary, whoever does that is STUPID (hopefully not me :D)

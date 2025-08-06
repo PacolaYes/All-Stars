@@ -1,0 +1,14 @@
+{
+    "Lua.diagnostics.globals": [
+        "GT_SQUIGGLEPANTS",
+        "mobjs",
+        "P_IsLocalPlayer",
+        "GTR_EMERALDTOKENS",
+        "GTR_EMERALDHUNT",
+        "GTR_SPAWNENEMIES",
+        "int_none",
+        "SGT_COOP",
+        "ease",
+        "tofixed"
+    ]
+}
