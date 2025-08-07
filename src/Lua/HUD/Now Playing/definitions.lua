@@ -69,7 +69,8 @@ local GAMEDEF = {
 	},
 	["Super Mario RPG"] = {
 		console = "SNES",
-		name = "SMRPG",
+		name = "MARIORPG",
+		img = "MARIO"
 	},
 	["Super Mario Galaxy 2"] = {
 		console = "Wii",
