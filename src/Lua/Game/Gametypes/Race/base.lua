@@ -105,13 +105,18 @@ Squigglepants.hud.addState({
 		for placement, p in ipairs(curPlacements) do ---@param p player_t
 			if placement > 3 and p != consoleplayer then continue end
 
+			local charSPR, flip = v.getSprite2Patch(p.skin, SPR2_STND, false, A, 2) ---@type patch_t, boolean | integer
+			flip = $ and V_FLIP or 0
+
 			if placement > 3 then
+				v.draw(320 - 16, 200 - 8, charSPR, V_SNAPTOBOTTOM|V_SNAPTORIGHT|flip, v.getColormap(p.skin, p.skincolor))
+				v.drawNum(320 - 16, 200 - 8, placement, V_SNAPTOBOTTOM|V_SNAPTORIGHT)
+				v.drawString(320 - 16 - charSPR.width, 200 - 8 - charSPR.height / 2, p.name, V_SNAPTOBOTTOM|V_SNAPTORIGHT, "right")
 				break -- you're not going any further >:(
 			else
-				local charSPR, flip = v.getSprite2Patch(p.skin, SPR2_STND, false, A, 2) ---@type patch_t, boolean | integer
-				flip = $ and V_FLIP or 0
-
-				v.draw(16, charSPR.height + curY, charSPR, V_SNAPTOTOP|V_SNAPTOLEFT|flip, v.getColormap(p.skin, p.skincolor))
+				v.draw(24, charSPR.height + curY, charSPR, V_SNAPTOTOP|V_SNAPTOLEFT|flip, v.getColormap(p.skin, p.skincolor))
+				v.drawNum(24, charSPR.height + curY, placement, V_SNAPTOTOP|V_SNAPTOLEFT)
+				v.drawString(24 + charSPR.width / 2, charSPR.height / 2 + curY, p.name, V_SNAPTOTOP|V_SNAPTOLEFT)
 				curY = $ + charSPR.height / 2 + 8
 			end
 		end
