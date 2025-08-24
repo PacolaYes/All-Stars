@@ -115,6 +115,6 @@ Squigglepants.hud.addState({
 				curY = $ + charSPR.height / 2 + 8
 			end
 		end
-		v.drawString(320 - 8, 200 - 16, Squigglepants.voteScreen.intermissionTics, 0, "right")
+		v.drawString(320 - 8, 200 - 16, Squigglepants.voteScreen.intermissionTics / TICRATE, 0, "right")
 	end
 })
