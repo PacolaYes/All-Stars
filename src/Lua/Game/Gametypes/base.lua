@@ -24,8 +24,11 @@ Squigglepants.gametypes = {
 ---@field description string? The gametype's description.
 ---@field exclusive boolean Does this gametype only show on maps that support it?
 ---@field typeoflevel integer what TOL_ flags this gametype supports
----@field hud string what HUD does this gametype default to when loading a map?
+---@field hud string? what HUD does this gametype default to when loading a map?
+---@field intermission string? if this gametype has an intermission, what HUD does it use?
 
+-- Adds a gametype to Squigglepants!
+---@param t SquiggleGametype
 function Squigglepants.addGametype(t)
 	if t.identifier == nil then
 		error("Please inform an identifier.")

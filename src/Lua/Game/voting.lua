@@ -12,7 +12,7 @@ local voteTime = 10*TICRATE
 
 local globalVars = {
 	voteScreen = {
-		isVoting = false,
+		screenState = SST_NONE,
 		selecting = false,
 		selectedPlayer = 0,
 		selectedMaps = {},
@@ -84,7 +84,7 @@ function Squigglepants.getRandomMap(self, doMap, doGametype, mapBlacklist, gtBla
 end
 
 -- starts a vote, preferred as only setting
--- voteScreen.isVoting to true is not all that a vote wants.
+-- voteScreen.screenState to SST_VOTE is not all that a vote wants.
 -- mapBlacklist and gtBlacklist are the same as above soo
 -- mapBlacklist is a function that gets the map number as an argument, returning true means that the map is blacklisted.
 -- gtBlacklist is a function that gets the gametype number as an argument, returning true means that the gametype is blacklisted.
@@ -93,7 +93,9 @@ end
 -- reminder to self: update this if changing the top one
 -- otherwise just go read the top one :P
 
--- starts a vote, preferred as only setting
+--- starts a vote, preferred as only setting; unless the gametype has an intermission
+---@param mapBlacklist function?
+---@param gtBlacklist function?
 function Squigglepants.startVote(mapBlacklist, gtBlacklist)
 	if not Squigglepants.inMode() then return end
 	
@@ -109,10 +111,13 @@ function Squigglepants.startVote(mapBlacklist, gtBlacklist)
 		foundMap[mapList[i].map] = true
 	end
 	
+	local gametypeDef = Squigglepants.getGametypeDef(Squigglepants.gametype)
+	local isIntermission = gametypeDef.intermission and true or false
 	local voteScreen = Squigglepants.voteScreen
+	voteScreen.intermissionTics = CV_FindVar("inttime").value * TICRATE
 	voteScreen.tics = voteTime
 	voteScreen.selectedMaps = mapList
-	voteScreen.isVoting = true
+	voteScreen.screenState = not isIntermission and SST_VOTE or SST_INTERMISSION
 	voteScreen.selected = false
 	
 	for mo in mobjs.iterate() do -- votes shouldn't have stuff bothering us >:(
@@ -120,7 +125,7 @@ function Squigglepants.startVote(mapBlacklist, gtBlacklist)
 		mo.state = S_INVISIBLE
 	end
 	
-	HUD.changeState("votingScreen-voting")
+	HUD.changeState(isIntermission and gametypeDef.intermission or "votingScreen-voting")
 end
 
 local function checkHUD(p, name)
@@ -137,7 +142,7 @@ addHook("PreThinkFrame", function()
 	local voteScreen = Squigglepants.voteScreen
 	
 	if not Squigglepants.inMode()
-	or not voteScreen.isVoting then
+	or voteScreen.screenState == SST_NONE then
 		return
 	end
 	
@@ -149,46 +154,49 @@ addHook("PreThinkFrame", function()
 		playerList[#playerList+1] = p
 		local sp = p.squigglepants ---@diagnostic disable-line: undefined-field
 		local vote = sp.votingScreen
-		
-		if not vote.hasSelected then
-			if ((p.cmd.sidemove >= 25) and not (vote.lastsidemove >= 25))
-			or ((p.cmd.sidemove <= -25) and not (vote.lastsidemove <= -25)) then
-				local add = clamp(p.cmd.sidemove)
-				
-				vote.selected = $+add
-				if vote.selected < 1 then
-					vote.selected = 4
-				elseif vote.selected > 4 then
-					vote.selected = 1
+			
+		if voteScreen.screenState == SST_VOTE then
+			if not vote.hasSelected then
+				if ((p.cmd.sidemove >= 25) and not (vote.lastsidemove >= 25))
+				or ((p.cmd.sidemove <= -25) and not (vote.lastsidemove <= -25)) then
+					local add = clamp(p.cmd.sidemove)
+					
+					vote.selected = $+add
+					if vote.selected < 1 then
+						vote.selected = 4
+					elseif vote.selected > 4 then
+						vote.selected = 1
+					end
 				end
-			end
-			
-			if (p.cmd.buttons & BT_JUMP)
-			and not (vote.lastbuttons & BT_JUMP) then
-				S_StartSound(nil, sfx_spvsel, p) -- why vs code tweaking on this
-				vote.hasSelected = true
-			end
-			
-			if checkHUD(p, "votingScreen-voting") then
-				HUD.changeState("votingScreen-voting")
-			end
-		else
-			
-			if (p.cmd.buttons & BT_SPIN)
-			and not (vote.lastbuttons & BT_SPIN) then
-				S_StartSound(nil, sfx_thok, p)
-				vote.hasSelected = false
-			end
-			
-			selectedPlayers[#selectedPlayers+1] = p
-			
-			if checkHUD(p, "votingScreen-voteShowcase") then
-				print(voteScreen.isVoting)
-				HUD.changeState("votingScreen-voteShowcase")
+				
+				if (p.cmd.buttons & BT_JUMP)
+				and not (vote.lastbuttons & BT_JUMP) then
+					S_StartSound(nil, sfx_spvsel, p) -- why vs code tweaking on this
+					vote.hasSelected = true
+				end
+				
+				if checkHUD(p, "votingScreen-voting") then
+					HUD.changeState("votingScreen-voting")
+				end
+			else
+				
+				if (p.cmd.buttons & BT_SPIN)
+				and not (vote.lastbuttons & BT_SPIN) then
+					S_StartSound(nil, sfx_thok, p)
+					vote.hasSelected = false
+				end
+				
+				selectedPlayers[#selectedPlayers+1] = p
+				
+				if checkHUD(p, "votingScreen-voteShowcase") then
+					print(voteScreen.screenState == SST_VOTE)
+					HUD.changeState("votingScreen-voteShowcase")
+				end
 			end
 		end
 		
 		vote.lastbuttons = p.cmd.buttons
+		vote.lastforwardmove = p.cmd.forwardmove -- if we ever need it :P -pac
 		vote.lastsidemove = p.cmd.sidemove
 		
 		p.cmd.forwardmove = 0
@@ -196,8 +204,19 @@ addHook("PreThinkFrame", function()
 		p.cmd.buttons = 0
 	end
 	
-	voteScreen.tics = $-1
+	if voteScreen.screenState == SST_INTERMISSION then
+		voteScreen.intermissionTics = $-1
+
+		if voteScreen.intermissionTics <= 0 then
+			voteScreen.screenState = SST_VOTE
+			HUD.changeState("votingScreen-voting")
+			return
+		end
+	end
 	
+	if voteScreen.screenState != SST_VOTE then return end
+
+	voteScreen.tics = $-1
 	if not voteScreen.selected then
 		if #selectedPlayers >= #playerList then
 			voteScreen.selected = true

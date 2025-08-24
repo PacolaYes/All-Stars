@@ -20,10 +20,10 @@ addHook("ThinkFrame", function()
 		
 		if P_MobjTouchingSectorSpecial(p.mo, 4, 2)
 		and not ((p.pflags & PF_FINISHED) or p.exiting)
-		and not voteScreen.isVoting then
+		and voteScreen.screenState != SST_NONE then
 			P_DoPlayerFinish(p)
 		elseif (p.exiting or (p.pflags & PF_FINISHED))
-		and voteScreen.isVoting then
+		and voteScreen.screenState == SST_NONE then
 			p.exiting = 0
 			p.pflags = $ & ~PF_FINISHED
 		end

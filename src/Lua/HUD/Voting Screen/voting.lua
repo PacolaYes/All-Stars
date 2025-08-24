@@ -26,7 +26,7 @@ end
 
 local function thinkFunc(self, v, tics, p)
 	if not p.squigglepants
-	or not voteScreen.isVoting
+	or voteScreen.screenState != SST_VOTE
 	or splitscreen and p == secondarydisplayplayer then return end
 	
 	local vote = p.squigglepants.votingScreen

@@ -24,7 +24,7 @@ local function enterFunc(self, v, tics, p)
 end
 
 local function thinkFunc(self, v, tics, plyr)
-	if not voteScreen.isVoting
+	if voteScreen.screenState != SST_VOTE
 	or splitscreen and plyr == secondarydisplayplayer then return end
 	
 	local maps = voteScreen.selectedMaps
@@ -41,8 +41,10 @@ local function thinkFunc(self, v, tics, plyr)
 	local y = mapMarginVert
 	local pCount = 0
 	for p in players.iterate do
+---@diagnostic disable-next-line: undefined-field
 		if not p.squigglepants then continue end
 		
+---@diagnostic disable-next-line: undefined-field
 		local vote = p.squigglepants.votingScreen
 		
 		pCount = $+1
