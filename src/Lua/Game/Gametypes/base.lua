@@ -58,14 +58,21 @@ function Squigglepants.addGametype(t)
 	Squigglepants.gametypes.tols = $ | t.typeoflevel
 end
 
----comment
+--- gets the definition of the specified gametype
 ---@param num number?
 ---@return SquiggleGametype
 function Squigglepants.getGametypeDef(num)
 	if tostring(num):lower() == "random" then
 		num = P_RandomRange(1, #Squigglepants.gametypes)
 	end
-	num = tonumber($) or 1
+	num = tonumber($) or Squigglepants.gametype
 	
 	return Squigglepants.gametypes[num] or Squigglepants.gametypes[1]
 end
+
+---@param v videolib
+addHook("HUD", function(v)
+	if Squigglepants.inMode() then
+		v.drawString(4, 200 - 16, Squigglepants.getGametypeDef().name, V_SNAPTOBOTTOM|V_SNAPTOLEFT)
+	end
+end, "scores")

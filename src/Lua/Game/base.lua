@@ -14,6 +14,7 @@ addHook("MapChange", function()
 	
 	if gametype ~= GT_SQUIGGLEPANTS then
 		Squigglepants.gametype = 1 -- reset it back :D
+		Squigglepants.nextgametype = 1
 		Squigglepants.hud.changeState("base", true)
 	else
 		Squigglepants.hud.changeState(
@@ -41,4 +42,17 @@ end)
 
 COM_AddCommand("startvote", function()
 	Squigglepants.startVote()
+end, COM_ADMIN)
+
+COM_AddCommand("setnextgametype", function(_, arg)
+	if not Squigglepants.inMode() then return end
+
+	arg = tonumber($)
+
+	if arg == nil
+	or arg < 0
+	or arg > #Squigglepants.gametypes then return end
+
+	Squigglepants.nextgametype = tonumber(arg)
+	print("The next gametype will be " +Squigglepants.getGametypeDef(arg).name)
 end, COM_ADMIN)
