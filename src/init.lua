@@ -17,8 +17,10 @@ G_AddGametype({ -- get us our gametype
 })
 
 rawset(_G, "Squigglepants", { -- and our variable! below is also variable stuff
-	sync = {},
-	hud = {}
+	sync = {
+		gametype = 1,
+		gamestate = -1
+	}
 })
 
 rawset(_G, "SST_NONE", -1)
@@ -29,52 +31,11 @@ addHook("NetVars", function(net)
 	Squigglepants.sync = net($)
 end)
 
-local function newindexFunc(self, key, val)
-	if type(val) ~= "function" then -- i think this is the only Big thing that i'd want to use like this?
-		self.sync[key] = val
-	else
-		rawset(self, key, val)
-	end
-end
-
-local mt = { -- pls make it so Squigglepants = Squigglepants.sync if its a variable that can be synched :D
-	__index = function(self, key)
-		--if type(self[key]) ~= "function" then
-		if self.sync[key] ~= nil then
-			return self.sync[key]
-		end
-	end,
-	__newindex = newindexFunc,
-	__usedindex = newindexFunc
-}
-
-setmetatable(Squigglepants, mt) -- note for self: maybe make a reverse of this for sync so sync absolutely CAN'T get functions if we modify it directly? might be a bit unnecessary, whoever does that is STUPID (hopefully not me :D)
-registerMetatable(mt)
-
 -- actual dofiling
--- until it becomes Squigglepants.dofiling, atleast
-dofile("Functions/load.lua")
+dofile("Libs/lib_customhud.lua")
+dofile("Functions/misc.lua")
 
-Squigglepants.dofile("Freeslots/voting.lua")
-Squigglepants.dofile("Freeslots/smb.lua") -- idk what this does but its cool - slude
-Squigglepants.dofile("Freeslots/hidden.lua") -- doesnt wanna work rn :P
+local dofile = Squigglepants.dofile
 
-Squigglepants.dofile("Game/Gametypes/base.lua") -- base of the seperate gametypes
-Squigglepants.dofile("Game/base.lua") -- base of the whole thing
-Squigglepants.dofile("Game/voting.lua")
-
-Squigglepants.dofile("HUD/system.lua")
--- Squigglepants.dofile("HUD/discordlink.lua")
-
--- Squigglepants.dofile("Game/Gametypes/Evil Leafy/definition.lua") -- TODO: make this one
-Squigglepants.dofile("Game/Gametypes/Co-op/base.lua")
-Squigglepants.dofile("Game/Gametypes/Race/base.lua")
-
-Squigglepants.dofile("HUD/Voting Screen/voting.lua")
-Squigglepants.dofile("HUD/Voting Screen/voted.lua")
-
-Squigglepants.dofile("HUD/Now Playing/now playing.lua")
-
-Squigglepants.dofile("Extra/smbfunction.lua")
-Squigglepants.dofile("Extra/hiddens.lua")
-Squigglepants.dofile("HUD/Now Playing/now playing.lua")
+dofile("Gametypes/handler.lua")
+dofile("Gametypes/Modes/Race.lua")

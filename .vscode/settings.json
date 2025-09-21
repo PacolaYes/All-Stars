@@ -1,15 +1,27 @@
 {
     "Lua.diagnostics.globals": [
-        "GT_SQUIGGLEPANTS",
         "mobjs",
         "P_IsLocalPlayer",
-        "GTR_EMERALDTOKENS",
-        "GTR_EMERALDHUNT",
-        "GTR_SPAWNENEMIES",
-        "int_none",
-        "SGT_COOP",
         "ease",
-        "tofixed",
-        "SGT_RACE"
+        "tofixed"
+    ],
+    "Lua.diagnostics.disable": [
+        "undefined-field",
+        "assign-type-mismatch",
+        "param-type-mismatch",
+        "cast-local-type"
+    ],
+    "Lua.diagnostics.ignoredConstantPrefixes":[
+        "MT_",
+        "S_",
+        "sfx_",
+        "SKINCOLOR_",
+        "SPR_",
+        "SPR2_",
+        "TOL_",
+        "GT_",
+        "int_",
+        "GTR_",
+        "SGT_"
     ]
 }
