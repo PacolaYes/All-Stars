@@ -37,5 +37,7 @@ dofile("Functions/misc.lua")
 
 local dofile = Squigglepants.dofile
 
+dofile("Game/voting.lua")
+
 dofile("Gametypes/handler.lua")
 dofile("Gametypes/Modes/Race.lua")

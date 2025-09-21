@@ -4,9 +4,8 @@ local COUNTDOWN_TIME = 4*TICRATE
 Squigglepants.addGametype({
     name = "Race",
     identifier = "race",
-    ---@param self SquigglepantsGametype
     ---@param p player_t
-    playerThink = function(self, p)
+    playerThink = function(_, p)
         if leveltime <= COUNTDOWN_TIME then
             p.pflags = $1|PF_FULLSTASIS
 

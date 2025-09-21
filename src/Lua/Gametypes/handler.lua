@@ -60,13 +60,19 @@ addHook("ThinkFrame", function()
         return
     end
 
-    local gtDef = Squigglepants.gametypes[Squigglepants.sync.gametype]
+    local gtDef = Squigglepants.gametypes[Squigglepants.sync.gametype] ---@type SquigglepantsGametype
     if not gtDef then
         return
     end
 
-    if type(gtDef.thinker) == "function" then
+    if type(gtDef.thinker) == "function"
+    and Squigglepants.sync.gamestate == SST_NONE then
         gtDef:thinker()
+    end
+
+    if type(gtDef.intermission) ~= "function"
+    and Squigglepants.sync.gamestate == SST_INTERMISSION then
+        Squigglepants.sync.gamestate = SST_VOTE
     end
 end)
 
@@ -77,16 +83,18 @@ addHook("PlayerThink", function(p)
         return
     end
 
-    local gtDef = Squigglepants.gametypes[Squigglepants.sync.gametype]
+    local gtDef = Squigglepants.gametypes[Squigglepants.sync.gametype] ---@type SquigglepantsGametype
     if not gtDef then
         return
     end
 
-    if type(gtDef.playerThink) == "function" then
+    if type(gtDef.playerThink) == "function"
+    and Squigglepants.sync.gamestate == SST_NONE then
         gtDef:playerThink(p)
     end
 end)
 
+local voteHUD = Squigglepants.dofile("Game/voting.lua") ---@type function
 -- handle gametype HUD stuff
 customhud.SetupItem("Squigglepants_Main", "Squigglepants", function(v)
     if gametype ~= GT_SQUIGGLEPANTS
@@ -99,7 +107,15 @@ customhud.SetupItem("Squigglepants_Main", "Squigglepants", function(v)
         return
     end
 
-    if type(gtDef.gameHUD) == "function" then
+    local gamestate = Squigglepants.sync.gamestate
+
+    if gamestate == SST_NONE
+    and type(gtDef.gameHUD) == "function" then
         gtDef.gameHUD(v)
+    elseif gamestate == SST_INTERMISSION
+    and type(gtDef.intermission) == "function" then
+        gtDef.intermission(v)
+    elseif gamestate == SST_VOTE then
+        voteHUD(v)
     end
 end, "gameandscores")

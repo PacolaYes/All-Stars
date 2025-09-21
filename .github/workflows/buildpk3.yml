@@ -37,7 +37,7 @@ jobs:
     - name: do the thing pls
       run: |
         cd src/
-        zip -r SpongebobSquigglepants-${{ env.NOW }}.pk3 .
+        zip -r ../SpongebobSquigglepants-${{ env.NOW }}.pk3 .
     
     - name: send thing to the action tab
       uses: actions/upload-artifact@v4

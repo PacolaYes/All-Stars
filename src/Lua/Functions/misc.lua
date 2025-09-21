@@ -11,3 +11,6 @@ function Squigglepants.dofile(file)
     end
     return storedFiles[file]
 end
+
+-- splitscreen hud stuff
+-- hooray !!
