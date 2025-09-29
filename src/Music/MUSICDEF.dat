@@ -19,22 +19,6 @@ Soundtestpage = 1
 Soundtestcond = 0
 BPM = 93
 
-Lump MK8LVL
-Title = Online_Menu
-Alttitle = Mario_Kart_8
-Authors = Ryo_Magamatsu,_Atsuko_Asahi,_Shiho_Fuji,_Yasuaki_Iwata
-Soundtestpage = 1
-Soundtestcond = 0
-BPM = 120
-
-Lump MKWLVL
-Title = Wi-Fi_Menu
-Alttitle = Mario_Kart_Wii
-Authors = Asuka_Ohta,_Ryo_Nagamatsu
-Soundtestpage = 1
-Soundtestcond = 0
-BPM = 161
-
 Lump POKRAT
 Title = Race_Against_Time!
 Alttitle = Plok
@@ -59,22 +43,6 @@ Soundtestpage = 1
 Soundtestcond = 0
 BPM = 62
 
-lump KSSHLE
-Title = Escape_the_Halberd
-Alttitle = Kirby_Super_Star
-Authors = Jun_Ishikawa
-Soundtestpage = 1
-Soundtestcond = 0
-BPM = 239
-
-Lump RPGSAD
-Title = Sad_Song
-Alttitle = Super_Mario_RPG
-Authors = Yoko_Shimomura
-Soundtestpage = 1
-Soundtestcond = 0
-BPM = 55
-
 Lump SMGCOS
 Title = Cosmic_Clones
 Alttitle = Super_Mario_Galaxy_2
@@ -82,3 +50,11 @@ Authors = Takeshi_Hama,_Mahito_Yokota,_Asuka_Hayazaki
 Soundtestpage = 1
 Soundtestcond = 0
 BPM = 154
+
+Lump KARWIN
+Title = Top_Ride_Victory
+Alttitle = Kirby_Air_Ride
+Authors = someone_idk
+Soundtestpage = 1
+Soundtestcond = 0
+BPM = 0
