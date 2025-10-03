@@ -18,8 +18,10 @@ G_AddGametype({ -- get us our gametype
 
 rawset(_G, "Squigglepants", { -- and our variable! below is also variable stuff
 	sync = {
-		gametype = 1,
-		gamestate = -1
+		gametype = 1, ---@type integer what gametype is it? uses SGT_ constants
+		gamestate = -1, ---@type integer what gamestate is it? uses SST_ constants
+		inttime = 0, ---@type tic_t how many tics is it left before intermission ends?
+        voteMaps = {} ---@type table<number> the maps available to vote, goes from 1 to 3
 	}
 })
 
@@ -34,9 +36,12 @@ end)
 -- actual dofiling
 dofile("Libs/lib_customhud.lua")
 dofile("Functions/misc.lua")
+dofile("Functions/hud.lua")
+dofile("Functions/hook.lua")
 
 local dofile = Squigglepants.dofile
 
+dofile("Game/handler.lua")
 dofile("Game/voting.lua")
 
 dofile("Gametypes/handler.lua")

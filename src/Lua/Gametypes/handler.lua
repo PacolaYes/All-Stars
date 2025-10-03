@@ -3,6 +3,8 @@
 local gametypeDefault = {
     name = "UNDEFINED", ---@type string The gametype's name, shows up on the Player List & Voting Screen.
     identifier = "UNDEFINED", ---@type string The gametype's identifier, "spongebob" would make it so the gametype is identified as SGT_SPONGEBOB code-wise.
+    description = "none", ---@type string? The gametype's description, shows up on the Voting Screen.
+    color = SKINCOLOR_APPLE, ---@type number? The gametype name's color, active on the Player List & Voting Screen.
     thinker = nil, ---@type function? ThinkFrame, but only when the gametype is active.<br>- Function has a self argument, representing the gametype's definition.
     playerThink = nil, ---@type function? PlayerThink, but only when the gametype is active.<br>- Function has a self argument, representing the gametype's definition.
     gameHUD = nil, ---@type function? A normal "game" type HUD hook, but only when the gametype is active.<br><br>Check the [wiki's page](https://wiki.srb2.org/wiki/Lua/Functions#HUD_hooks) for more information.
@@ -69,11 +71,6 @@ addHook("ThinkFrame", function()
     and Squigglepants.sync.gamestate == SST_NONE then
         gtDef:thinker()
     end
-
-    if type(gtDef.intermission) ~= "function"
-    and Squigglepants.sync.gamestate == SST_INTERMISSION then
-        Squigglepants.sync.gamestate = SST_VOTE
-    end
 end)
 
 ---@param p player_t
@@ -103,9 +100,7 @@ customhud.SetupItem("Squigglepants_Main", "Squigglepants", function(v)
     end
 
     local gtDef = Squigglepants.gametypes[Squigglepants.sync.gametype] ---@type SquigglepantsGametype?
-    if not gtDef then
-        return
-    end
+    if not gtDef then return end
 
     local gamestate = Squigglepants.sync.gamestate
 
