@@ -5,3 +5,4 @@ convMUSICDEF.lua
 *.autosave*
 *.backup*
 *.pk3
+/assets/promo assets/*
