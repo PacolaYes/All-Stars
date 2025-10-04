@@ -19,7 +19,7 @@ jobs:
       - name: Check changes :D
         id: changes
         run: |
-          if [[ git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -E -v ".\.md|\.github/|\.vscode/|\.gitignore|.\.ase|.\.aseprite" || ${{ github.event_name == 'workflow_dispatch' }} ]]; then
+          if [[ git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -E -v ".\.md|\.github/|\.vscode/|\.gitignore|.\.ase|.\.aseprite" || ${{ github.event_name }} = "workflow_dispatch" ]]; then
             echo "changed=true" >> $GITHUB_OUTPUT
           else
             echo "changed=false" >> $GITHUB_OUTPUT
