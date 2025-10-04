@@ -6,18 +6,26 @@
 local hook = Squigglepants.Hooks
 local inttime = CV_FindVar("inttime")
 
----Gets a random map. Capable of blacklisting maps
----@param blacklist function?
----@return integer
-function Squigglepants.getRandomMap(blacklist)
-    local mapnum
+---Gets a random map. Capable of blacklisting maps & gamemodes
+---@param map_blacklist function?
+---@param mode_blacklist function?
+---@return integer, integer
+function Squigglepants.getRandomMap(map_blacklist, mode_blacklist)
+    local mapnum, modenum
+
+    while modenum == nil
+    or type(mode_blacklist) == "function" and mode_blacklist(modenum) do
+        modenum = P_RandomRange(1, #Squigglepants.gametypes)
+    end
+
     while mapnum == nil
     or not mapheaderinfo[mapnum]
-    or type(blacklist) == "function" and blacklist(mapnum) do
+    or not (mapheaderinfo[mapnum].typeoflevel & Squigglepants.gametypes[modenum].typeoflevel)
+    or type(map_blacklist) == "function" and map_blacklist(mapnum) do
         mapnum = P_RandomRange(1, 1035)
     end
 
-    return mapnum
+    return mapnum, modenum
 end
 
 --- ends the round :P
@@ -38,7 +46,7 @@ function Squigglepants.endRound()
     for i = 1, 4 do
         while Squigglepants.sync.voteMaps[i] == nil
         or foundMaps[Squigglepants.sync.voteMaps[i]] do
-            Squigglepants.sync.voteMaps[i] = Squigglepants.getRandomMap()
+            Squigglepants.sync.voteMaps[i] = {Squigglepants.getRandomMap()}
         end
         foundMaps[Squigglepants.sync.voteMaps[i]] = true
     end
@@ -60,10 +68,16 @@ addHook("PreThinkFrame", function()
         total = 0,
         selected = 0
     }
+    local selectedMaps = {}
     for p in players.iterate do
         playerList.total = $+1
         if p.squigglepants.vote.selected then
             playerList.selected = $+1
+
+            local selMap = p.squigglepants.vote.selX + 2*(p.squigglepants.vote.selY - 1)
+            if not Squigglepants.find(selectedMaps, selMap) then
+                selectedMaps[#selectedMaps+1] = selMap
+            end
         end
     end
 
@@ -76,20 +90,14 @@ addHook("PreThinkFrame", function()
             Squigglepants.sync.inttime = inttime.value*TICRATE / 2
             Squigglepants.sync.state = SST_VOTE
         else
-            local selectedMaps = {}
-            for p in players.iterate do
-                if p.squigglepants.vote.selected then
-                    local selMap = p.squigglepants.vote.selX + 2*(p.squigglepants.vote.selY - 1)
-                    if not Squigglepants.find(selectedMaps, selMap) then
-                        selectedMaps[#selectedMaps+1] = selMap
-                    end
-                end
-            end
-
-            if #selectedMaps then
-                G_SetCustomExitVars(Squigglepants.sync.voteMaps[P_RandomRange(1, #selectedMaps)], 1)
+            local rand = #selectedMaps and selectedMaps[P_RandomRange(1, #selectedMaps)] or P_RandomRange(1, 4)
+            if rand < 4 then
+                G_SetCustomExitVars(Squigglepants.sync.voteMaps[rand][1], 1)
+                Squigglepants.sync.gametype = Squigglepants.sync.voteMaps[rand][2]
             else
-                G_SetCustomExitVars(Squigglepants.sync.voteMaps[P_RandomRange(1, 3)], 1)
+                local map, mode = Squigglepants.getRandomMap()
+                G_SetCustomExitVars(map, 1)
+                Squigglepants.sync.gametype = mode
             end
             G_ExitLevel()
         end
@@ -200,7 +208,8 @@ return function(v)
 
     local mapHovered = vote.selX + 2*(vote.selY - 1)
     for i = 1, 4 do
-        local lvlgfx = v.cachePatch(G_BuildMapName(Squigglepants.sync.voteMaps[i]) + "P")
+        local map = Squigglepants.sync.voteMaps[i]
+        local lvlgfx = v.cachePatch(G_BuildMapName(map[1]) + "P")
         local lvlWidth, lvlHeight = (lvlgfx.width * mapScale), (lvlgfx.height * mapScale)
 
         local xAdd = -(mapMargin + lvlWidth)
@@ -215,6 +224,7 @@ return function(v)
         local x, y = (160*FU + xAdd), (100*FU + yAdd)
 
         v.drawScaled(x, y, mapScale, lvlgfx)
+        v.drawString(x, y + 75*FU, Squigglepants.gametypes[map[2]].name, 0, "fixed")
 
         x, y = $1 + 2*FU, $2 + 2*FU
         if playerList[i] then

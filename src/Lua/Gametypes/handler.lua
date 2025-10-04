@@ -3,14 +3,15 @@
 local gametypeDefault = {
     name = "UNDEFINED", ---@type string The gametype's name, shows up on the Player List & Voting Screen.
     identifier = "UNDEFINED", ---@type string The gametype's identifier, "spongebob" would make it so the gametype is identified as SGT_SPONGEBOB code-wise.
-    description = "none", ---@type string? The gametype's description, shows up on the Voting Screen.
-    color = SKINCOLOR_APPLE, ---@type number? The gametype name's color, active on the Player List & Voting Screen.
+    description = nil, ---@type string? The gametype's description, shows up on the Voting Screen.
+    color = SKINCOLOR_NONE, ---@type integer? The gametype name's color, active on the Player List & Voting Screen.
+    typeoflevel = TOL_COOP|TOL_SQUIGGLEPANTS, ---@type integer? The gametype's TOL_ flags, chooses which type of levels the mode accepts :P
+
     thinker = nil, ---@type function? ThinkFrame, but only when the gametype is active.<br>- Function has a self argument, representing the gametype's definition.
     playerThink = nil, ---@type function? PlayerThink, but only when the gametype is active.<br>- Function has a self argument, representing the gametype's definition.
     gameHUD = nil, ---@type function? A normal "game" type HUD hook, but only when the gametype is active.<br><br>Check the [wiki's page](https://wiki.srb2.org/wiki/Lua/Functions#HUD_hooks) for more information.
     intermission = nil --- @type function? This mode's intermission HUD function, skips directly to vote if none is given.
 }
-
 -- not recommended to directly modify this, but do whatever u want
 Squigglepants.gametypes = {} ---@type table<SquigglepantsGametype>
 
@@ -35,6 +36,9 @@ function Squigglepants.addGametype(definition)
     else
         rawset(_G, idName, idNum)
     end
+
+    definition.color = $ or gametypeDefault.color
+    definition.typeoflevel = $ or gametypeDefault.typeoflevel
 
     Squigglepants.gametypes[idNum] = definition
 end
@@ -92,12 +96,28 @@ addHook("PlayerThink", function(p)
 end)
 
 local voteHUD = Squigglepants.dofile("Game/voting.lua") ---@type function
+-- handle intermission/vote HUD stuff
+customhud.SetupItem("Squigglepants_Intermission", "Squigglepants", function(v)
+    if gametype ~= GT_SQUIGGLEPANTS
+    or not Squigglepants.sync.gametype then return end
+
+    local gtDef = Squigglepants.gametypes[Squigglepants.sync.gametype] ---@type SquigglepantsGametype?
+    if not gtDef then return end
+
+    local gamestate = Squigglepants.sync.gamestate
+
+    if gamestate == SST_INTERMISSION
+    and type(gtDef.intermission) == "function" then
+        gtDef.intermission(v)
+    elseif gamestate == SST_VOTE then
+        voteHUD(v)
+    end
+end, "gameandscores")
+
 -- handle gametype HUD stuff
 customhud.SetupItem("Squigglepants_Main", "Squigglepants", function(v)
     if gametype ~= GT_SQUIGGLEPANTS
-    or not Squigglepants.sync.gametype then
-        return
-    end
+    or not Squigglepants.sync.gametype then return end
 
     local gtDef = Squigglepants.gametypes[Squigglepants.sync.gametype] ---@type SquigglepantsGametype?
     if not gtDef then return end
@@ -107,10 +127,5 @@ customhud.SetupItem("Squigglepants_Main", "Squigglepants", function(v)
     if gamestate == SST_NONE
     and type(gtDef.gameHUD) == "function" then
         gtDef.gameHUD(v)
-    elseif gamestate == SST_INTERMISSION
-    and type(gtDef.intermission) == "function" then
-        gtDef.intermission(v)
-    elseif gamestate == SST_VOTE then
-        voteHUD(v)
     end
-end, "gameandscores")
+end, "game")

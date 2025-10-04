@@ -4,6 +4,8 @@ local COUNTDOWN_TIME = 4*TICRATE
 Squigglepants.addGametype({
     name = "Race",
     identifier = "race",
+    description = "its race",
+    typeoflevel = TOL_RACE,
     ---@param p player_t
     playerThink = function(_, p)
         if leveltime <= COUNTDOWN_TIME then
