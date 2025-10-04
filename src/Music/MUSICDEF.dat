@@ -52,9 +52,33 @@ Soundtestcond = 0
 BPM = 154
 
 Lump KARWIN
-Title = Top_Ride_Victory
+Title = Top_Ride_Results_Screen
 Alttitle = Kirby_Air_Ride
-Authors = someone_idk
+Authors = HAL_Laboratory
 Soundtestpage = 1
 Soundtestcond = 0
-BPM = 0
+BPM = 165 
+
+Lump _TITLE
+Title = Title_Screen
+Alttitle = Super_Mario_3D_World
+Authors = Koji_Kondo
+Soundtestpage = 1
+Soundtestcond = 0
+BPM = 104 
+
+Lump VSBOSS
+Title = The_Curse
+Alttitle = Mamorukun's_Curse!
+Authors = Yousuke_Yasui
+Soundtestpage = 1
+Soundtestcond = 0
+BPM = 135 
+
+Lump MCRBSA
+Title = The_Curse_Again
+Alttitle = Mamorukun's_Curse!
+Authors = Yousuke_Yasui
+Soundtestpage = 1
+Soundtestcond = 0
+BPM = 165 
