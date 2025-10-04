@@ -99,7 +99,7 @@ addHook("PreThinkFrame", function()
                 G_SetCustomExitVars(map, 1)
                 Squigglepants.sync.gametype = mode
             end
-            G_ExitLevel()
+            G_ExitLevel() 
         end
     end
 end)
