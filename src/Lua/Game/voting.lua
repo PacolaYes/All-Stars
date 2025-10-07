@@ -63,6 +63,19 @@ COM_AddCommand("endround", function()
     Squigglepants.endRound()
 end, COM_ADMIN)
 
+COM_AddCommand("squiggle_setgamemode", function(_, arg)
+    local gt = Squigglepants.getGametypeDef(arg)
+    if not gt
+    and tonumber(arg) then
+        gt = Squigglepants.gametypes[tonumber(arg)]
+    end
+
+    if gt then
+        G_ExitLevel()
+        Squigglepants.sync.gametype = _G["SGT_"+gt.identifier:upper()]
+    end
+end, COM_ADMIN)
+
 addHook("PreThinkFrame", function()
     if gametype ~= GT_SQUIGGLEPANTS
     or Squigglepants.sync.gamestate == SST_NONE then return end
@@ -103,7 +116,7 @@ addHook("PreThinkFrame", function()
             local rand = #selectedMaps and selectedMaps[P_RandomRange(1, #selectedMaps)] or P_RandomRange(1, 4)
             G_SetCustomExitVars(Squigglepants.sync.voteMaps[rand][1], 1)
             Squigglepants.sync.gametype = Squigglepants.sync.voteMaps[rand][2]
-            G_ExitLevel() 
+            G_ExitLevel()
         end
     end
 end)

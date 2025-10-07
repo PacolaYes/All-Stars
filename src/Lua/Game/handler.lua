@@ -53,7 +53,7 @@ addHook("ThinkFrame", function()
         end
     end
 
-    if gtDef.hasIntermission
+    if not gtDef.hasIntermission
     and Squigglepants.sync.gamestate == SST_INTERMISSION then
         Squigglepants.sync.gamestate = SST_VOTE
     end
