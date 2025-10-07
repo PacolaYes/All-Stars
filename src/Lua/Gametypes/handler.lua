@@ -1,4 +1,6 @@
 
+local function emptyFunc() end
+
 ---@class SquigglepantsGametype: table
 local gametypeDefault = {
     name = "UNDEFINED", ---@type string The gametype's name, shows up on the Player List & Voting Screen.
@@ -7,15 +9,25 @@ local gametypeDefault = {
     color = SKINCOLOR_NONE, ---@type integer? The gametype name's color, active on the Player List & Voting Screen.
     typeoflevel = TOL_COOP|TOL_SQUIGGLEPANTS, ---@type integer? The gametype's TOL_ flags, chooses which type of levels the mode accepts :P
 
-    thinker = nil, ---@type function? ThinkFrame, but only when the gametype is active.<br>- Function has a self argument, representing the gametype's definition.
-    playerThink = nil, ---@type function? PlayerThink, but only when the gametype is active.<br>- Function has a self argument, representing the gametype's definition.
-    gameHUD = nil, ---@type function? A normal "game" type HUD hook, but only when the gametype is active.<br><br>Check the [wiki's page](https://wiki.srb2.org/wiki/Lua/Functions#HUD_hooks) for more information.
-    intermission = nil --- @type function? This mode's intermission HUD function, skips directly to vote if none is given.
+    thinker = emptyFunc, ---@type function? ThinkFrame, but only when the gametype is active.<br>- Function has a self argument, representing the gametype's definition.
+    playerThink = emptyFunc, ---@type function? PlayerThink, but only when the gametype is active.<br>- Function has a self argument, representing the gametype's definition.
+    setup = emptyFunc, ---@type function? MapChange, but only when the gametype is active.<br>- Function has a self argument, representing the gametype's definition.
+    onend = emptyFunc, ---@type function? Triggered on end of mode, so when intermission / voting starts.<br>- Function has a self argument, representing the gametype's definition.
+
+    gameHUD = emptyFunc, ---@type function? A normal "game" type HUD hook, but only when the gametype is active.<br><br>Check the [wiki's page](https://wiki.srb2.org/wiki/Lua/Functions#HUD_hooks) for more information..<br>- Function has a self argument, representing the gametype's definition.
+    intermission = emptyFunc, ---@type function? This mode's intermission HUD function, skips directly to vote if none is given..<br>- Function has a self argument, representing the gametype's definition.
+    hasIntermission = nil ---@type boolean? Does this mode have an intermission? Automatically set based on if there's an intermission HUD set or not.
 }
 -- not recommended to directly modify this, but do whatever u want
 Squigglepants.gametypes = {} ---@type table<SquigglepantsGametype>
 
---- adds a gametype
+local gtMeta = {
+    __index = gametypeDefault
+}
+
+registerMetatable(gtMeta)
+
+--- adds a gametype; allows for custom variables as global per-gametype vars.
 ---@param definition SquigglepantsGametype
 function Squigglepants.addGametype(definition)
     if type(definition) ~= "table" then
@@ -37,13 +49,20 @@ function Squigglepants.addGametype(definition)
         rawset(_G, idName, idNum)
     end
 
-    definition.color = $ or gametypeDefault.color
-    definition.typeoflevel = $ or gametypeDefault.typeoflevel
+    setmetatable(definition, gtMeta)
+    local defMeta = {
+        __index = definition
+    }
+    registerMetatable(defMeta)
 
-    Squigglepants.gametypes[idNum] = definition
+    local gtTable = setmetatable({}, defMeta)
+    gtTable.hasIntermission = type(rawget(definition, "intermission")) == "function"
+    
+    Squigglepants.gametypes[idNum] = gtTable
 end
 
---- gets a gametype's identifier by gametype name; name is case-sensitive.
+--- gets a gametype's identifier by gametype name; name is case-sensitive. <br>
+--- not recommended as it may cause resynchs if multiple gametypes have the same name.
 ---@param name string
 ---@return SquigglepantsGametype?
 function Squigglepants.getGametypeDef(name)
@@ -71,8 +90,7 @@ addHook("ThinkFrame", function()
         return
     end
 
-    if type(gtDef.thinker) == "function"
-    and Squigglepants.sync.gamestate == SST_NONE then
+    if Squigglepants.sync.gamestate == SST_NONE then
         gtDef:thinker()
     end
 end)
@@ -89,8 +107,7 @@ addHook("PlayerThink", function(p)
         return
     end
 
-    if type(gtDef.playerThink) == "function"
-    and Squigglepants.sync.gamestate == SST_NONE then
+    if Squigglepants.sync.gamestate == SST_NONE then
         gtDef:playerThink(p)
     end
 end)
@@ -106,9 +123,8 @@ customhud.SetupItem("Squigglepants_Intermission", "Squigglepants", function(v)
 
     local gamestate = Squigglepants.sync.gamestate
 
-    if gamestate == SST_INTERMISSION
-    and type(gtDef.intermission) == "function" then
-        gtDef.intermission(v)
+    if gamestate == SST_INTERMISSION then
+        gtDef:intermission(v)
     elseif gamestate == SST_VOTE then
         voteHUD(v)
     end
@@ -124,8 +140,7 @@ customhud.SetupItem("Squigglepants_Main", "Squigglepants", function(v)
 
     local gamestate = Squigglepants.sync.gamestate
 
-    if gamestate == SST_NONE
-    and type(gtDef.gameHUD) == "function" then
-        gtDef.gameHUD(v)
+    if gamestate == SST_NONE then
+        gtDef:gameHUD(v)
     end
 end, "game")

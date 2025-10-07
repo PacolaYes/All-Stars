@@ -30,6 +30,8 @@ end
 
 --- ends the round :P
 function Squigglepants.endRound()
+    mapmusname = "KARWIN"
+    S_ChangeMusic(mapmusname, true)
     Squigglepants.sync.gamestate = SST_INTERMISSION
 
     for mo in mobjs.iterate() do
@@ -38,17 +40,22 @@ function Squigglepants.endRound()
     end
 
     local gtDef = Squigglepants.gametypes[Squigglepants.sync.gametype] ---@type SquigglepantsGametype?
-    local div = (gtDef and type(gtDef.intermission) == "function") and 2 or 1
+    local div = (gtDef and gtDef.hasIntermission) and 2 or 1
 
     Squigglepants.sync.inttime = inttime.value*TICRATE / div
     Squigglepants.sync.voteMaps = {}
     local foundMaps = {}
-    for i = 1, 4 do
+    for i = 1, 3 do
         while Squigglepants.sync.voteMaps[i] == nil
-        or foundMaps[Squigglepants.sync.voteMaps[i]] do
+        or foundMaps[Squigglepants.sync.voteMaps[i][1]] do
             Squigglepants.sync.voteMaps[i] = {Squigglepants.getRandomMap()}
         end
-        foundMaps[Squigglepants.sync.voteMaps[i]] = true
+        foundMaps[Squigglepants.sync.voteMaps[i][1]] = true
+    end
+    Squigglepants.sync.voteMaps[4] = {Squigglepants.getRandomMap()}
+
+    if gtDef then
+        gtDef:onend()
     end
 end
 
@@ -64,41 +71,38 @@ addHook("PreThinkFrame", function()
     if result then return end
 
     Squigglepants.sync.inttime = $-1
-    local playerList = {
-        total = 0,
-        selected = 0
-    }
-    local selectedMaps = {}
-    for p in players.iterate do
-        playerList.total = $+1
-        if p.squigglepants.vote.selected then
-            playerList.selected = $+1
 
-            local selMap = p.squigglepants.vote.selX + 2*(p.squigglepants.vote.selY - 1)
-            if not Squigglepants.find(selectedMaps, selMap) then
-                selectedMaps[#selectedMaps+1] = selMap
+    local selectedMaps = {}
+    if Squigglepants.sync.gamestate == SST_VOTE then
+        local playerList = {
+            total = 0,
+            selected = 0
+        }
+        for p in players.iterate do
+            playerList.total = $+1
+            if p.squigglepants.vote.selected then
+                playerList.selected = $+1
+
+                local selMap = p.squigglepants.vote.selX + 2*(p.squigglepants.vote.selY - 1)
+                if not Squigglepants.find(selectedMaps, selMap) then
+                    selectedMaps[#selectedMaps+1] = selMap
+                end
             end
         end
-    end
 
-    if playerList.total == playerList.selected then
-        Squigglepants.sync.inttime = 0
+        if playerList.total == playerList.selected then
+            Squigglepants.sync.inttime = 0
+        end
     end
 
     if Squigglepants.sync.inttime <= 0 then
         if Squigglepants.sync.gamestate == SST_INTERMISSION then
             Squigglepants.sync.inttime = inttime.value*TICRATE / 2
-            Squigglepants.sync.state = SST_VOTE
+            Squigglepants.sync.gamestate = SST_VOTE
         else
             local rand = #selectedMaps and selectedMaps[P_RandomRange(1, #selectedMaps)] or P_RandomRange(1, 4)
-            if rand < 4 then
-                G_SetCustomExitVars(Squigglepants.sync.voteMaps[rand][1], 1)
-                Squigglepants.sync.gametype = Squigglepants.sync.voteMaps[rand][2]
-            else
-                local map, mode = Squigglepants.getRandomMap()
-                G_SetCustomExitVars(map, 1)
-                Squigglepants.sync.gametype = mode
-            end
+            G_SetCustomExitVars(Squigglepants.sync.voteMaps[rand][1], 1)
+            Squigglepants.sync.gametype = Squigglepants.sync.voteMaps[rand][2]
             G_ExitLevel() 
         end
     end
@@ -125,6 +129,7 @@ hook.addHook("PrePlayerThink", function(p)
 
     if Squigglepants.sync.gamestate == SST_VOTE then
         if not vote.selected then
+            local oldVote = vote.selX + vote.selY
             if abs(p.cmd.forwardmove) > 15
             and abs(vote.lastcmd.forwardmove) <= 15 then
                 local add = -clamp(p.cmd.forwardmove)
@@ -148,6 +153,10 @@ hook.addHook("PrePlayerThink", function(p)
                 end
             end
 
+            if oldVote ~= vote.selX + vote.selY then
+                S_StartSound(nil, sfx_menu1, p)
+            end
+
             if vote.selX < 1 then
                 vote.selX = 2
             elseif vote.selX > 2 then
@@ -162,10 +171,12 @@ hook.addHook("PrePlayerThink", function(p)
             if (p.cmd.buttons & BT_JUMP)
             and not (vote.lastcmd.buttons & BT_JUMP) then
                 vote.selected = true
+                S_StartSound(nil, sfx_addfil, p)
             end
         elseif (p.cmd.buttons & BT_SPIN)
         and not (vote.lastcmd.buttons & BT_SPIN) then
             vote.selected = false
+            S_StartSound(nil, sfx_notadd, p)
         end
     end
 
@@ -209,7 +220,17 @@ return function(v)
     local mapHovered = vote.selX + 2*(vote.selY - 1)
     for i = 1, 4 do
         local map = Squigglepants.sync.voteMaps[i]
-        local lvlgfx = v.cachePatch(G_BuildMapName(map[1]) + "P")
+        local lvlgfx
+        local modeName
+        
+        if i < 4 then
+            lvlgfx = v.cachePatch(G_BuildMapName(map[1]) + "P")
+            modeName = Squigglepants.gametypes[map[2]].name
+        else
+            lvlgfx = v.cachePatch("BLANKLVL")
+            modeName = "???"
+        end
+
         local lvlWidth, lvlHeight = (lvlgfx.width * mapScale), (lvlgfx.height * mapScale)
 
         local xAdd = -(mapMargin + lvlWidth)
@@ -224,7 +245,7 @@ return function(v)
         local x, y = (160*FU + xAdd), (100*FU + yAdd)
 
         v.drawScaled(x, y, mapScale, lvlgfx)
-        v.drawString(x, y + 75*FU, Squigglepants.gametypes[map[2]].name, 0, "fixed")
+        v.drawString(x, y + 79*FU, modeName, 0, "fixed")
 
         x, y = $1 + 2*FU, $2 + 2*FU
         if playerList[i] then

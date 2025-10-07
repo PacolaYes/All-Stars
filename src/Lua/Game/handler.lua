@@ -8,6 +8,11 @@ addHook("MapChange", function()
     for p in players.iterate do
         p.squigglepants = nil
     end
+
+    local gtDef = Squigglepants.gametypes[Squigglepants.sync.gametype] ---@type SquigglepantsGametype?
+    if gtDef then
+        gtDef:setup()
+    end
 end)
 
 local function genSquigglepants()
@@ -48,7 +53,7 @@ addHook("ThinkFrame", function()
         end
     end
 
-    if type(gtDef.intermission) ~= "function"
+    if gtDef.hasIntermission
     and Squigglepants.sync.gamestate == SST_INTERMISSION then
         Squigglepants.sync.gamestate = SST_VOTE
     end
