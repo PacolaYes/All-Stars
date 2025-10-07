@@ -31,6 +31,7 @@ rawset(_G, "SST_VOTE", 1)
 
 addHook("NetVars", function(net)
 	Squigglepants.sync = net($)
+    Squigglepants.gametypes = net($)
 end)
 
 -- actual dofiling
@@ -46,3 +47,4 @@ dofile("Game/voting.lua")
 
 dofile("Gametypes/handler.lua")
 dofile("Gametypes/Modes/Race.lua")
+dofile("Gametypes/Modes/Cosmic Clones.lua")
