@@ -1,11 +1,12 @@
 
 local CLONE_OFFSET = 3*TICRATE -- when the clones start showing up
-local CLONES_PER_SECOND = 2 -- self-explanatory, goes up to TICRATE (35)
-local CLONE_OPACITY = FU/2 -- 0 to FU, gets halved when it's not your clone
+local CLONE_STARTUP = TICRATE/2 -- how long the clones do their start-up anim
+local CLONES_PER_SECOND = 4 -- self-explanatory, can go up to TICRATE (35)
+local CLONE_OPACITY = FU - FU/4 -- 0 to FU, gets halved when it's not your clone
 
 mobjinfo[freeslot("MT_SQUIGGLEPANTS_COSMICCLONE")] = {
     spawnstate = S_INVISIBLE,
-    flags = MF_PAIN
+    flags = MF_PAIN|MF_NOCLIPHEIGHT|MF_NOGRAVITY
 }
 
 ---@class clonePos
@@ -16,7 +17,9 @@ local copyList = {
     angle = 0,
     sprite = 0,
     sprite2 = 0,
-    frame = 0
+    frame = 0,
+    destscale = 0,
+    scale = 0
 }
 
 Squigglepants.addGametype({
@@ -25,7 +28,7 @@ Squigglepants.addGametype({
     description = "galaxy D:",
     typeoflevel = TOL_RACE,
     setup = function(self) ---@param self SquigglepantsGametype
-        self.clonetimer = -1
+        self.clonetimer = 0
 
         self.cloneList = {}
     end,
@@ -47,39 +50,42 @@ Squigglepants.addGametype({
     ---@param self SquigglepantsGametype
     ---@param p player_t
     playerThink = function(self, p)
-        if not (p.mo and p.mo.valid) then return end
+        if not (p.mo and p.mo.valid)
+        or (p.pflags & PF_FINISHED)
+        or p.exiting then return end
 
-        if (self.clonetimer % (TICRATE / CLONES_PER_SECOND)) == 0 then
+        if P_PlayerTouchingSectorSpecialFlag(p, SSF_EXIT) then
+            P_DoPlayerFinish(p)
+        end
+
+        if not self.cloneList[#p] then
+            self.cloneList[#p] = {}
+        end
+
+        local cloneList_pos = #self.cloneList[#p]+1
+        self.cloneList[#p][cloneList_pos] = {}
+        for key in pairs(copyList) do
+            self.cloneList[#p][cloneList_pos][key] = p.mo[key]
+        end
+        self.cloneList[#p][cloneList_pos].angle = p.drawangle
+
+        if leveltime > CLONE_OFFSET
+        and (self.clonetimer % (TICRATE / CLONES_PER_SECOND)) == 0
+        and self.cloneList and self.cloneList[#p] then
             local clonePos = self.cloneList[#p][1] ---@type clonePos
             local clone = P_SpawnMobj(clonePos.x, clonePos.y, clonePos.z, MT_SQUIGGLEPANTS_COSMICCLONE)
             clone.angle = clonePos.angle
             clone.cloneNum = #p
+            clone.height = p.mo.height
+            clone.radius = p.mo.radius
+
             clone.skin = p.mo.skin
             clone.color = SKINCOLOR_GALAXY
             clone.colorized = true
             clone.state = S_PLAY_STND
         end
 
-        if not (p.pflags & PF_FINISHED)
-        and not p.exiting then
-            if P_PlayerTouchingSectorSpecialFlag(p, SSF_EXIT) then
-                P_DoPlayerFinish(p)
-            end
-
-            if not self.cloneList[#p] then
-                self.cloneList[#p] = {}
-            end
-
-            local cloneList_pos = #self.cloneList[#p]+1
-            self.cloneList[#p][cloneList_pos] = {}
-            for key in pairs(copyList) do
-                self.cloneList[#p][cloneList_pos][key] = p.mo[key]
-            end
-            self.cloneList[#p][cloneList_pos].angle = p.drawangle
-        end
-
-        if p.playerstate ~= PST_LIVE
-        or not p.mo.health then
+        if p.playerstate == PST_REBORN then
             G_DoReborn(#p)
             p.rmomx, p.rmomy = 0, 0
             p.spectator = true
@@ -102,20 +108,24 @@ addHook("MobjThinker", function(mo)
         return
     end
 
-    local clonePos = gtDef.cloneList[mo.cloneNum]
-    if not clonePos
-    or not clonePos[mo.timeAlive or 1] then
-        P_RemoveMobj(mo)
-        return
-    end
+    if mo.timeAlive ~= nil
+    and mo.timeAlive > CLONE_STARTUP then
+        local clonePos_num = mo.timeAlive and mo.timeAlive - CLONE_STARTUP or 1
+        local clonePos = gtDef.cloneList[mo.cloneNum]
+        if not clonePos
+        or not clonePos[clonePos_num] then
+            P_RemoveMobj(mo)
+            return
+        end
 
-    clonePos = clonePos[mo.timeAlive or 1]
-    P_MoveOrigin(mo, clonePos.x, clonePos.y, clonePos.z)
-    for key in pairs(copyList) do
-        if key ~= "x"
-        and key ~= "y"
-        and key ~= "z" then
-            mo[key] = clonePos[key]
+        clonePos = clonePos[clonePos_num]
+        P_MoveOrigin(mo, clonePos.x, clonePos.y, clonePos.z)
+        for key in pairs(copyList) do
+            if key ~= "x"
+            and key ~= "y"
+            and key ~= "z" then
+                mo[key] = clonePos[key]
+            end
         end
     end
 
@@ -129,3 +139,13 @@ addHook("MobjThinker", function(mo)
     end
     mo.timeAlive = $ and $+1 or 2
 end, MT_SQUIGGLEPANTS_COSMICCLONE)
+
+addHook("ShouldDamage", function(pmo, clone)
+    if not (pmo and pmo.valid)
+    or not (clone and clone.valid)
+    or clone.type ~= MT_SQUIGGLEPANTS_COSMICCLONE then return end
+
+    if #pmo.player ~= clone.cloneNum then
+        return false
+    end
+end, MT_PLAYER)
