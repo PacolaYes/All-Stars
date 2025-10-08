@@ -15,6 +15,13 @@ addHook("MapChange", function()
     end
 end)
 
+addHook("MapLoad", function()
+    local gtDef = Squigglepants.gametypes[Squigglepants.sync.gametype] ---@type SquigglepantsGametype?
+    if gtDef then
+        gtDef:onload()
+    end
+end)
+
 local function genSquigglepants()
     return {
         vote = {

@@ -9,7 +9,6 @@ Squigglepants.addGametype({
     setup = function(self) ---@param self SquigglepantsGametype
         self.leveltime = 0
         self.winnerList = {}
-        print(self.winnerList)
     end,
 
     thinker = function(self) ---@param self SquigglepantsGametype

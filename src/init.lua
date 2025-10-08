@@ -28,6 +28,7 @@ rawset(_G, "Squigglepants", { -- and our variable! below is also variable stuff
 rawset(_G, "SST_NONE", -1)
 rawset(_G, "SST_INTERMISSION", 0)
 rawset(_G, "SST_VOTE", 1)
+rawset(_G, "SST_ROULETTE", 2)
 
 addHook("NetVars", function(net)
 	Squigglepants.sync = net($)

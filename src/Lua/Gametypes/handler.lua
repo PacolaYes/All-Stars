@@ -12,6 +12,7 @@ local gametypeDefault = {
     thinker = emptyFunc, ---@type function? ThinkFrame, but only when the gametype is active.<br>- Function has a self argument, representing the gametype's definition.
     playerThink = emptyFunc, ---@type function? PlayerThink, but only when the gametype is active.<br>- Function has a self argument, representing the gametype's definition.
     setup = emptyFunc, ---@type function? MapChange, but only when the gametype is active.<br>- Function has a self argument, representing the gametype's definition.
+    onload = emptyFunc, ---@type function? MapLoad, but only when the gametype is active.<br>- Function has a self argument, representing the gametype's definition.
     onend = emptyFunc, ---@type function? Triggered on end of mode, so when intermission / voting starts.<br>- Function has a self argument, representing the gametype's definition.
 
     gameHUD = emptyFunc, ---@type function? A normal "game" type HUD hook, but only when the gametype is active.<br><br>Check the [wiki's page](https://wiki.srb2.org/wiki/Lua/Functions#HUD_hooks) for more information..<br>- Function has a self argument, representing the gametype's definition.

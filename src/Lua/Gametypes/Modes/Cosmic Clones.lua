@@ -1,6 +1,6 @@
 
 local CLONE_OFFSET = 3*TICRATE -- when the clones start showing up
-local CLONE_STARTUP = TICRATE/2 -- how long the clones do their start-up anim
+local CLONE_STARTUP = TICRATE/4 -- how long the clones do their start-up anim
 local CLONES_PER_SECOND = 4 -- self-explanatory, can go up to TICRATE (35)
 local CLONE_OPACITY = FU - FU/4 -- 0 to FU, gets halved when it's not your clone
 
@@ -9,18 +9,7 @@ mobjinfo[freeslot("MT_SQUIGGLEPANTS_COSMICCLONE")] = {
     flags = MF_PAIN|MF_NOCLIPHEIGHT|MF_NOGRAVITY
 }
 
----@class clonePos
-local copyList = {
-    x = 0,
-    y = 0,
-    z = 0,
-    angle = 0,
-    sprite = 0,
-    sprite2 = 0,
-    frame = 0,
-    destscale = 0,
-    scale = 0
-}
+local copyList = {"x", "y", "z", "angle", "sprite", "sprite2", "frame", "destscale", "scale", "eflags"}
 
 Squigglepants.addGametype({
     name = "Cosmic Clones",
@@ -64,7 +53,7 @@ Squigglepants.addGametype({
 
         local cloneList_pos = #self.cloneList[#p]+1
         self.cloneList[#p][cloneList_pos] = {}
-        for key in pairs(copyList) do
+        for key in ipairs(copyList) do
             self.cloneList[#p][cloneList_pos][key] = p.mo[key]
         end
         self.cloneList[#p][cloneList_pos].angle = p.drawangle
@@ -72,7 +61,7 @@ Squigglepants.addGametype({
         if leveltime > CLONE_OFFSET
         and (self.clonetimer % (TICRATE / CLONES_PER_SECOND)) == 0
         and self.cloneList and self.cloneList[#p] then
-            local clonePos = self.cloneList[#p][1] ---@type clonePos
+            local clonePos = self.cloneList[#p][1]
             local clone = P_SpawnMobj(clonePos.x, clonePos.y, clonePos.z, MT_SQUIGGLEPANTS_COSMICCLONE)
             clone.angle = clonePos.angle
             clone.cloneNum = #p
@@ -120,7 +109,7 @@ addHook("MobjThinker", function(mo)
 
         clonePos = clonePos[clonePos_num]
         P_MoveOrigin(mo, clonePos.x, clonePos.y, clonePos.z)
-        for key in pairs(copyList) do
+        for key in ipairs(copyList) do
             if key ~= "x"
             and key ~= "y"
             and key ~= "z" then
