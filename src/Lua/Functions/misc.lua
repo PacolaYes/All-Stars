@@ -4,12 +4,16 @@ local storedFiles = {}
 -- dofile
 -- but it stores stuff
 ---@param file string
----@return unknown
+---@return ...any
 function Squigglepants.dofile(file)
     if not storedFiles[file] then
-        storedFiles[file] = dofile(file)
+        storedFiles[file] = {dofile(file)}
     end
-    return storedFiles[file]
+
+    if type(storedFiles[file]) == "table" then
+        return unpack(storedFiles[file])
+    end
+    return(storedFiles[file])
 end
 
 ---returns a copy of table `t`

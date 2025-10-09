@@ -4,6 +4,17 @@
 
 Squigglepants.HUD = {}
 
+local cachedPatches = {}
+---cachePatch but it stores patches in a table :D
+---@param v videolib
+---@param name string
+function Squigglepants.HUD.getPatch(v, name)
+    if not (cachedPatches[name] and cachedPatches[name].valid) then
+        cachedPatches[name] = v.cachePatch(name)
+    end
+    return cachedPatches[name]
+end
+
 ---drawFill but with a patch oooooo
 ---@param v videolib
 ---@param x fixed_t?
@@ -12,10 +23,20 @@ Squigglepants.HUD = {}
 ---@param height fixed_t?
 ---@param scale fixed_t?
 ---@param patch patch_t
-function Squigglepants.HUD.patchFill(v, x, y, width, height, scale, patch)
+---@param flags number?
+function Squigglepants.HUD.patchFill(v, x, y, width, height, scale, patch, flags)
+    if x == nil
+    and y == nil
+    and width == nil
+    and height == nil
+    and flags == nil then
+        flags = V_SNAPTOTOP|V_SNAPTOLEFT|V_HUDTRANS
+    end
+    
     x = $ or 0
     y = $ or 0
     scale = $ or FU
+    flags = $ or 0
     if width == nil then
         width = 999*FU
     end
@@ -31,7 +52,7 @@ function Squigglepants.HUD.patchFill(v, x, y, width, height, scale, patch)
             v.drawScaled(
                 x + filledWidth, y + filledHeight,
                 scale, patch,
-                V_SNAPTOTOP|V_SNAPTOLEFT, nil
+                flags, nil
             )
 
             filledHeight = $ + patchHeight
@@ -49,6 +70,13 @@ local custom_videolib = {
     secondplyr = false,
     videolib = nil ---@type videolib
 }
+
+---Caches a new patch using a graphic with `name` as the name. Returns nil if the graphic does not exist.
+---@param name string
+---@return patch_t?
+function custom_videolib:cachePatch(name)
+    return Squigglepants.HUD.getPatch(self.videolib, name)
+end
 
 ---@param x number
 ---@param y number

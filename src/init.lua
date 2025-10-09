@@ -21,7 +21,8 @@ rawset(_G, "Squigglepants", { -- and our variable! below is also variable stuff
 		gametype = 1, ---@type integer what gametype is it? uses SGT_ constants
 		gamestate = -1, ---@type integer what gamestate is it? uses SST_ constants
 		inttime = 0, ---@type tic_t how many tics is it left before intermission ends?
-        voteMaps = {} ---@type table<number> the maps available to vote, goes from 1 to 3
+        voteMaps = {}, ---@type table<number> the maps available to vote, goes from 1 to 3
+        selectedMap = {} ---@type table the map that's been selected
 	}
 })
 

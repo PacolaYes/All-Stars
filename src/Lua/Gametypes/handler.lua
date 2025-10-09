@@ -113,7 +113,8 @@ addHook("PlayerThink", function(p)
     end
 end)
 
-local voteHUD = Squigglepants.dofile("Game/voting.lua") ---@type function
+local voteHUD, rouletteHUD = Squigglepants.dofile("Game/voting.lua") ---@type function, function
+
 -- handle intermission/vote HUD stuff
 customhud.SetupItem("Squigglepants_Intermission", "Squigglepants", function(v)
     if gametype ~= GT_SQUIGGLEPANTS
@@ -128,6 +129,8 @@ customhud.SetupItem("Squigglepants_Intermission", "Squigglepants", function(v)
         gtDef:intermission(v)
     elseif gamestate == SST_VOTE then
         voteHUD(v)
+    elseif gamestate == SST_ROULETTE then
+        rouletteHUD(v)
     end
 end, "gameandscores")
 
