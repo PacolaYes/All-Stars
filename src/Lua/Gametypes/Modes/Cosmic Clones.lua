@@ -53,7 +53,7 @@ Squigglepants.addGametype({
 
         local cloneList_pos = #self.cloneList[#p]+1
         self.cloneList[#p][cloneList_pos] = {}
-        for key in ipairs(copyList) do
+        for _, key in ipairs(copyList) do
             self.cloneList[#p][cloneList_pos][key] = p.mo[key]
         end
         self.cloneList[#p][cloneList_pos].angle = p.drawangle
@@ -109,7 +109,7 @@ addHook("MobjThinker", function(mo)
 
         clonePos = clonePos[clonePos_num]
         P_MoveOrigin(mo, clonePos.x, clonePos.y, clonePos.z)
-        for key in ipairs(copyList) do
+        for _, key in ipairs(copyList) do
             if key ~= "x"
             and key ~= "y"
             and key ~= "z" then
