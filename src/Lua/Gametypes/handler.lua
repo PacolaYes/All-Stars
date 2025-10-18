@@ -19,6 +19,8 @@ local gametypeDefault = {
     intermission = emptyFunc, ---@type function? This mode's intermission HUD function, skips directly to vote if none is given..<br>- Function has a self argument, representing the gametype's definition.
     hasIntermission = nil ---@type boolean? Does this mode have an intermission? Automatically set based on if there's an intermission HUD set or not.
 }
+
+-- table with all the gametypes added.<br>
 -- not recommended to directly modify this, but do whatever u want
 Squigglepants.gametypes = {} ---@type table<SquigglepantsGametype>
 
@@ -50,6 +52,8 @@ function Squigglepants.addGametype(definition)
         rawset(_G, idName, idNum)
     end
 
+    local hasIntermission = type(definition.intermission) == "function"
+    
     setmetatable(definition, gtMeta)
     local defMeta = {
         __index = definition
@@ -57,7 +61,7 @@ function Squigglepants.addGametype(definition)
     registerMetatable(defMeta)
 
     local gtTable = setmetatable({}, defMeta)
-    gtTable.hasIntermission = type(rawget(definition, "intermission")) == "function"
+    gtTable.hasIntermission = hasIntermission
     
     Squigglepants.gametypes[idNum] = gtTable
 end
@@ -67,7 +71,7 @@ end
 ---@param name string
 ---@return SquigglepantsGametype?
 function Squigglepants.getGametypeDef(name)
-    if type(name) != "string" then
+    if type(name) ~= "string" then
         error("Oops! It seems you've forgotten to specify a name!", 2)
         return
     end

@@ -13,7 +13,7 @@ function Squigglepants.dofile(file)
     if type(storedFiles[file]) == "table" then
         return unpack(storedFiles[file])
     end
-    return(storedFiles[file])
+    return (storedFiles[file])
 end
 
 ---returns a copy of table `t`

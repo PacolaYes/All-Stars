@@ -1,6 +1,6 @@
 
-local CLONE_OFFSET = 3*TICRATE -- when the clones start showing up
-local CLONE_STARTUP = TICRATE/4 -- how long the clones do their start-up anim
+local CLONE_OFFSET = TICRATE / 2 -- when the clones start showing up
+local CLONE_STARTUP = TICRATE -- how long the clones do their start-up anim
 local CLONES_PER_SECOND = 4 -- self-explanatory, can go up to TICRATE (35)
 local CLONE_OPACITY = FU - FU/4 -- 0 to FU, gets halved when it's not your clone
 
@@ -27,11 +27,10 @@ Squigglepants.addGametype({
             self.clonetimer = $+1
         end
 
-        for key in ipairs(self.cloneList) do
-            if not (players[key] and players[key].valid) then
-                print(key)
-                self.cloneList[key] = nil
-                continue
+        for i = 0, 31 do
+            if self.cloneList[i] ~= nil
+            and not (players[i] and players[i].valid) then
+                self.cloneList[i] = nil
             end
         end
     end,
@@ -134,7 +133,9 @@ addHook("ShouldDamage", function(pmo, clone)
     or not (clone and clone.valid)
     or clone.type ~= MT_SQUIGGLEPANTS_COSMICCLONE then return end
 
-    if #pmo.player ~= clone.cloneNum then
+    if #pmo.player ~= clone.cloneNum
+    or not clone.timeAlive
+    or clone.timeAlive <= CLONE_STARTUP then
         return false
     end
 end, MT_PLAYER)

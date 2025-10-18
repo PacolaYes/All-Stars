@@ -265,6 +265,15 @@ local function drawVoteMaps(v, offsetX, offsetY, margin)
 end
 
 ---@param v videolib
+---@param timeleft number
+local function drawVoteExtras(v, timeleft)
+    local timercircle = Squigglepants.HUD.getPatch(v, "TIMERCIRCLE") ---@type patch_t
+    v.drawScaled(160*FU - timercircle.width*FU/4, 100*FU - timercircle.height*FU/4, FU/2, timercircle, V_HUDTRANS)
+    v.drawString(160, 100 - 4, timeleft, V_HUDTRANS, "center")
+    v.drawString(160, 1, "please wait while the programmer takes her nap!", V_SNAPTOTOP|V_HUDTRANS|V_ALLOWLOWERCASE, "thin-center")
+end
+
+---@param v videolib
 local function voteHUD(v)
     local p = displayplayer ---@type squigglepantsPlayer
     local vote = p.squigglepants.vote
@@ -322,28 +331,32 @@ local function voteHUD(v)
         v.drawScaled(x + char.leftoffset*charScale, y + char.topoffset*charScale, charScale, char, V_HUDTRANS, v.getColormap(TC_DEFAULT, 0, "Squigglepants_EyesOnly"))
     end
     
-    v.drawString(160, 100 - 4, Squigglepants.sync.inttime/TICRATE+1, V_HUDTRANS, "center")
-    v.drawString(160, 1, "please wait while the programmer takes her nap!", V_SNAPTOTOP|V_HUDTRANS|V_ALLOWLOWERCASE, "thin-center")
+    drawVoteExtras(v, Squigglepants.sync.inttime/TICRATE+1)
 end
 
+local pre_centerWait = TICRATE/4
 local centerTime = TICRATE - TICRATE/4
-local centerWait = TICRATE / 2
-local mysteryTime = 2*TICRATE + TICRATE/2
-local mysteryWait = TICRATE
-local waitTime = 2*TICRATE + TICRATE/2
+local centerWait = 0
+local mysteryTime = 2*TICRATE + TICRATE/4
+local mysteryWait = TICRATE + TICRATE/4
+local waitTime = 2*TICRATE
 
-roulettetime = centerTime + centerWait + mysteryTime + mysteryWait + waitTime
+roulettetime = pre_centerWait + centerTime + centerWait + mysteryTime + mysteryWait + waitTime
 ---@param v videolib
 local function rouletteHUD(v)
-    local p = consoleplayer ---@type squigglepantsPlayer
-    local vote = p.squigglepants.vote
     local timeleft = roulettetime - Squigglepants.sync.inttime
 
     drawVoteBG(v)
+    if timeleft < pre_centerWait then
+        drawVoteMaps(v)
+    end
+    drawVoteExtras(v, 0)
+
+    if timeleft < pre_centerWait then return end
 
     local blankgfx = Squigglepants.HUD.getPatch(v, "BLANKLVL") ---@type patch_t
-    if timeleft < centerTime + centerWait then
-        local time = min(FixedDiv(timeleft, centerTime), FU)
+    if timeleft < (pre_centerWait + centerTime + centerWait) then
+        local time = min(FixedDiv(timeleft - pre_centerWait, centerTime), FU)
         for i = 1, 4 do
             local map = Squigglepants.sync.voteMaps[i]
             local lvlgfx
@@ -368,16 +381,16 @@ local function rouletteHUD(v)
                 yAdd = mapMargin
             end
 
-            local x, y = 160*FU + ease.inquad(time, xAdd, -(mapMargin + lvlWidth/2)), 100*FU + ease.inquad(time, yAdd, -(mapMargin + lvlHeight/2))
+            local x, y = 160*FU + ease.insine(time, xAdd, -(mapMargin + lvlWidth/2)), 100*FU + ease.insine(time, yAdd, -(mapMargin + lvlHeight/2))
 
             v.drawScaled(x, y, mapScale, lvlgfx, V_HUDTRANS)
             v.drawString(x + 2*FU, y + 80*FU, modeName, V_HUDTRANS, "fixed")
         end
-    elseif timeleft < centerTime + centerWait + mysteryTime + mysteryWait then
-        local time = min(FixedDiv(timeleft - (centerTime + centerWait), mysteryTime), FU)
+    elseif timeleft < (pre_centerWait + centerTime + centerWait + mysteryTime + mysteryWait) then
+        local time = min(FixedDiv(timeleft - (pre_centerWait + centerTime + centerWait), mysteryTime), FU)
 
         local xOffset, yOffset = v.RandomFixed() * v.RandomRange(-1, 1), v.RandomFixed() * v.RandomRange(-1, 1)
-        xOffset, yOffset = ease.inexpo(time, $1, 8*$1), ease.inexpo(time, $2, 8*$2)
+        xOffset, yOffset = ease.inexpo(time, 0, 8*$1), ease.inexpo(time, 0, 8*$2)
 
         local x, y = (160*FU - blankgfx.width*mapScale/2) + xOffset, (100*FU - blankgfx.height*mapScale/2) + yOffset
         v.drawScaled(x, y, mapScale, blankgfx, V_HUDTRANS)
@@ -389,7 +402,7 @@ local function rouletteHUD(v)
 
         v.drawScaled(x, y, mapScale, blankgfx, trans << V_ALPHASHIFT, v.getColormap(TC_DEFAULT, SKINCOLOR_NONE, "AllWhite"))
     else
-        local timeNum = timeleft - (centerTime + centerWait + mysteryTime + mysteryWait)
+        local timeNum = timeleft - (pre_centerWait + centerTime + centerWait + mysteryTime + mysteryWait)
         local time = min(FixedDiv(timeNum, TICRATE/4), FU)
 
         local xOffset, yOffset = 0, 0
