@@ -19,14 +19,6 @@ Soundtestpage = 1
 Soundtestcond = 0
 BPM = 93
 
-Lump POKRAT
-Title = Race_Against_Time!
-Alttitle = Plok
-Authors = Tim_Follin,_Geoff_Follin
-Soundtestpage = 1
-Soundtestcond = 0
-BPM = 165
-
 Lump PASWRD
 Title = Password_Screen
 Alttitle = The_Flintstones
@@ -59,7 +51,7 @@ Soundtestpage = 1
 Soundtestcond = 0
 BPM = 165 
 
-Lump _TITLE
+Lump M3WTIT
 Title = Title_Screen
 Alttitle = Super_Mario_3D_World
 Authors = Koji_Kondo
@@ -67,7 +59,7 @@ Soundtestpage = 1
 Soundtestcond = 0
 BPM = 104 
 
-Lump VSBOSS
+Lump MCRBOS
 Title = The_Curse
 Alttitle = Mamorukun's_Curse!
 Authors = Yousuke_Yasui
@@ -82,3 +74,11 @@ Authors = Yousuke_Yasui
 Soundtestpage = 1
 Soundtestcond = 0
 BPM = 165 
+
+Lump K64RSS
+Title = Ripple_Star_Select
+Alttitle = Kirby_64
+Authors = Jun_Ishikawa
+Soundtestpage = 1
+Soundtestcond = 0
+BPM = 147
