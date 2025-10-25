@@ -33,6 +33,21 @@ Squigglepants.addGametype({
 
             if P_PlayerTouchingSectorSpecialFlag(p, SSF_EXIT) then
                 P_DoPlayerFinish(p)
+
+                local finishedcount, totalcount = 0, 0
+                for p2 in players.iterate do
+                    if not (p2.mo and p2.mo.valid) then continue end
+
+                    if (p2.pflags & PF_FINISHED)
+                    or p2.exiting then
+                        finishedcount = $+1
+                    end
+                    totalcount = $+1
+                end
+
+                if finishedcount == totalcount then
+                    Squigglepants.endRound()
+                end
             end
         end
     end,
