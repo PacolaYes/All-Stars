@@ -207,7 +207,7 @@ end)
 
 local scrollTime = 8 * TICRATE
 local bgScale = FU
-local mapScale = tofixed("0.9")
+local mapScale = tofixed("0.95")
 local mapMargin = 4 * FU
 
 ---@param v videolib
@@ -248,9 +248,11 @@ local function drawVoteMaps(v, offsetX, offsetY, margin)
         lvlWidth, lvlHeight = (lvlgfx.width * mapScale), (lvlgfx.height * mapScale)
 
         local xAdd = -(margin + lvlWidth)
+        local textAlign = "fixed"
         local yAdd = -(margin + lvlHeight)
         if (i % 2) == 0 then
             xAdd = margin
+            textAlign = "fixed-right"
         end
         if i > 2 then
             yAdd = margin
@@ -258,8 +260,8 @@ local function drawVoteMaps(v, offsetX, offsetY, margin)
 
         local x, y = (160*FU + xAdd + offsetX), (100*FU + yAdd + offsetY)
 
-        v.drawScaled(x, y, mapScale, lvlgfx, V_HUDTRANS)
-        v.drawString(x + 2*FU, y + 80*FU, modeName, V_HUDTRANS, "fixed")
+        v.drawScaled(x, y, mapScale, lvlgfx)
+        v.drawString(x + 2*FU, y + 80*FU, modeName, 0, textAlign)
     end
     return lvlWidth, lvlHeight
 end
@@ -297,9 +299,11 @@ local function voteHUD(v)
     local mapHovered = vote.selX + 2*(vote.selY - 1)
 
     local xAdd = -(mapMargin + lvlWidth)
+    local xMul = 1
     local yAdd = -(mapMargin + lvlHeight)
     if (mapHovered % 2) == 0 then
-        xAdd = mapMargin
+        xAdd = mapMargin + lvlWidth
+        xMul = -1
     end
     if mapHovered > 2 then
         yAdd = mapMargin
@@ -319,7 +323,7 @@ local function voteHUD(v)
                 local charScale = (skins[ip.skin].flags & SF_HIRES) and skins[ip.skin].highresscale or FU
 
                 v.drawScaled(x + char.leftoffset*charScale, y + char.topoffset*charScale, charScale, char, V_HUDTRANS, v.getColormap(ip.skin, ip.skincolor))
-                x = $ + char.width*charScale + margin
+                x = $ + (char.width*charScale + margin) * xMul
             end
         end
     end
