@@ -1,8 +1,11 @@
 
 local CLONE_OFFSET = TICRATE / 2 -- when the clones start showing up
 local CLONE_STARTUP = TICRATE -- how long the clones do their start-up anim
+local CLONE_STUN = TICRATE -- how long the clones are stunned for
 local CLONES_PER_SECOND = 4 -- self-explanatory, can go up to TICRATE (35)
 local CLONE_OPACITY = FU - FU/4 -- 0 to FU, gets halved when it's not your clone
+
+local RING_TOTAL = 4 -- 1/xth of the total rings
 
 mobjinfo[freeslot("MT_SQUIGGLEPANTS_COSMICCLONE")] = {
     spawnstate = S_INVISIBLE,
@@ -18,8 +21,34 @@ Squigglepants.addGametype({
     typeoflevel = TOL_RACE,
     setup = function(self) ---@param self SquigglepantsGametype
         self.clonetimer = 0
+        self.ringtotal = 0 -- how many rings are in the level
+        self.ringcount = 0 -- how many rings were collected
 
         self.cloneList = {}
+    end,
+
+    onload = function(self) ---@param self SquigglepantsGametype
+        for p in players.iterate do
+            p.squigglepants.cosmicclones = {
+                lives = 3
+            }
+        end
+
+        for mo in mobjs.iterate() do
+            if mo.type == MT_RING then
+                self.ringtotal = $+1
+            end
+
+            if mo.type == MT_RING_BOX then
+                self.ringtotal = $+10
+            end
+        end
+
+        if self.ringtotal == 0 then
+            Squigglepants.endRound()
+            return
+        end
+        print(self.ringtotal / RING_TOTAL)
     end,
 
     thinker = function(self) ---@param self SquigglepantsGametype
@@ -42,9 +71,12 @@ Squigglepants.addGametype({
         or (p.pflags & PF_FINISHED)
         or p.exiting then return end
 
-        if P_PlayerTouchingSectorSpecialFlag(p, SSF_EXIT) then
-            P_DoPlayerFinish(p)
+        if self.ringtotal > 0
+        and self.ringcount >= self.ringtotal / RING_TOTAL then
+            Squigglepants.endRound()
         end
+
+        self.ringcount = p.rings
 
         if not self.cloneList[#p] then
             self.cloneList[#p] = {}
@@ -74,9 +106,13 @@ Squigglepants.addGametype({
         end
 
         if p.playerstate == PST_REBORN then
-            G_DoReborn(#p)
-            p.rmomx, p.rmomy = 0, 0
-            p.spectator = true
+            p.squigglepants.cosmicclones.lives = $-1
+
+            if p.squigglepants.cosmicclones.lives <= 0 then
+                G_DoReborn(#p)
+                p.rmomx, p.rmomy = 0, 0
+                p.spectator = true
+            end
         end
     end
 })
