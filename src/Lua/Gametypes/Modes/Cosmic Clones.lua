@@ -34,7 +34,7 @@ Squigglepants.addGametype({
             }
         end
 
-        for mo in mobjs.iterate() do
+        for mo in mobjs.iterate() do -- TODO: make this account for other ring types
             if mo.type == MT_RING then
                 self.ringtotal = $+1
             end

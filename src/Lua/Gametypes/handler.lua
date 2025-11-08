@@ -157,7 +157,7 @@ customhud.SetupItem("Squigglepants_Intermission", "Squigglepants", function(v)
 end, "gameandscores")
 
 -- handle gametype HUD stuff
-customhud.SetupItem("Squigglepants_Main", "Squigglepants", function(v)
+customhud.SetupItem("Squigglepants_Main", "Squigglepants", function(v, ...)
     if gametype ~= GT_SQUIGGLEPANTS
     or not Squigglepants.sync.gametype then return end
 
@@ -167,6 +167,6 @@ customhud.SetupItem("Squigglepants_Main", "Squigglepants", function(v)
     local gamestate = Squigglepants.sync.gamestate
 
     if gamestate == SST_NONE then
-        gtDef:gameHUD(v)
+        gtDef:gameHUD(v, ...)
     end
 end, "game")

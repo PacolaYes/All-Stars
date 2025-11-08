@@ -8,16 +8,90 @@ Squigglepants.addGametype({
     typeoflevel = TOL_RACE,
     setup = function(self) ---@param self SquigglepantsGametype
         self.leveltime = 0
+
         self.winnerList = {}
+        self.checkpointList = {}
+        self.placements = {}
     end,
 
     thinker = function(self) ---@param self SquigglepantsGametype
-        if leveltime > COUNTDOWN_TIME then
-            self.leveltime = $+1
-        elseif leveltime % TICRATE == 0
-        and leveltime > 0 then
-            S_StartSound(nil, sfx_thok)
+        if leveltime <= COUNTDOWN_TIME then
+            if leveltime % TICRATE == 0
+            and leveltime > 0 then
+                S_StartSound(nil, sfx_thok)
+            end
+
+            if not #self.checkpointList
+            and leveltime <= 5 then
+                local sign
+                for mt in mapthings.iterate do
+                    if mt.type == 502 then
+                        self.checkpointList[mt.mobj.health] = mt.mobj
+                    end
+                    
+                    if mt.type == 501 then
+                        sign = mt
+                    end
+                end
+
+                if (sign and sign.valid) then
+                    local signPos = {
+                        x = sign.x * FU,
+                        y = sign.y * FU
+                    }
+                    signPos.z = P_FloorzAtPos(signPos.x, signPos.y, ONFLOORZ, 0) + sign.z * FU
+                    if (sign.options & MTF_OBJECTFLIP) then
+                        signPos.z = P_CeilingzAtPos(signPos.x, signPos.y, ONFLOORZ, 0) - sign.z * FU
+                    end
+
+                    self.checkpointList[#self.checkpointList+1] = signPos
+                end
+            end
+            return
         end
+
+        if (leveltime % 5) == 0 then
+            local temp_placements = {}
+            for p in players.iterate do
+                temp_placements[#temp_placements+1] = p
+            end
+
+            ---@param p1 squigglepantsPlayer
+            ---@param p2 squigglepantsPlayer
+            table.sort(temp_placements, function(p1, p2)
+                if p1.starpostnum ~= p2.starpostnum then
+                    return p1.starpostnum < p2.starpostnum
+                end
+
+                local checkpoint = self.checkpointList[p1.starpostnum+1] or self.checkpointList[#self.checkpointList]
+                return R_PointToDist2(p1.realmo.x, p1.realmo.y, checkpoint.x, checkpoint.y) < R_PointToDist2(p2.realmo.x, p2.realmo.y, checkpoint.x, checkpoint.y)
+            end)
+
+            local true_placements = {}
+            local trueKey = 1
+            local prevPlyr
+            for _, p in ipairs(temp_placements) do
+                if not (p and p.valid) then continue end
+
+                if (prevPlyr and prevPlyr.valid)
+                and prevPlyr.starpostnum == p.starpostnum then
+                    local checkpoint = self.checkpointList[p.starpostnum+1] or self.checkpointList[#self.checkpointList]
+                    if abs(R_PointToDist2(prevPlyr.realmo.x, prevPlyr.realmo.y, checkpoint.x, checkpoint.y) - R_PointToDist2(p.realmo.x, p.realmo.y, checkpoint.x, checkpoint.y)) <= p.realmo.radius + prevPlyr.realmo.radius then
+                        table.insert(true_placements[trueKey-1], p)
+                        prevPlyr = p
+                        continue
+                    end
+                end
+
+                true_placements[trueKey] = {p}
+                prevPlyr = p
+                trueKey = $+1
+            end
+
+            self.placements = true_placements
+        end
+
+        self.leveltime = $+1
     end,
 
     ---@param self SquigglepantsGametype
@@ -33,19 +107,8 @@ Squigglepants.addGametype({
 
             if P_PlayerTouchingSectorSpecialFlag(p, SSF_EXIT) then
                 P_DoPlayerFinish(p)
-
-                local finishedcount, totalcount = 0, 0
-                for p2 in players.iterate do
-                    if not (p2.mo and p2.mo.valid) then continue end
-
-                    if (p2.pflags & PF_FINISHED)
-                    or p2.exiting then
-                        finishedcount = $+1
-                    end
-                    totalcount = $+1
-                end
-
-                if finishedcount == totalcount then
+                
+                if G_EnoughPlayersFinished() then
                     Squigglepants.endRound()
                 end
             end
@@ -57,6 +120,7 @@ Squigglepants.addGametype({
         for p in players.iterate do
             temp_winnerList[#temp_winnerList+1] = p
         end
+
         table.sort(temp_winnerList, function(a, b)
             return a.realtime < b.realtime
         end)
@@ -79,10 +143,25 @@ Squigglepants.addGametype({
         end
     end,
 
-    gameHUD = function(_, v) ---@param v videolib
+    ---@param v videolib
+    ---@param p player_t
+    gameHUD = function(self, v, p)
         if leveltime < COUNTDOWN_TIME then
             local timer = (COUNTDOWN_TIME / TICRATE - 1) - (leveltime / TICRATE)
             v.drawString(160, 100, timer, 0, "center")
+
+            return
+        end
+
+        if self.placements then
+            for key, t in ipairs(self.placements) do ---@param p squigglepantsPlayer
+                for _, t_p in ipairs(t) do
+                    if t_p ~= p then continue end
+
+                    v.drawString(320 - 16, 200 - 16, key, V_SNAPTOBOTTOM|V_SNAPTORIGHT|V_PERPLAYER, "right")
+                    break 2
+                end
+            end
         end
     end,
 

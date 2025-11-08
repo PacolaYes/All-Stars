@@ -39,6 +39,10 @@ function Squigglepants.endRound()
         mo.flags = MF_NOTHINK
         mo.state = S_INVISIBLE
     end
+    for p in players.iterate do
+        p.pflags = ($ & ~PF_FINISHED)
+        p.exiting = 0
+    end
 
     local gtDef = Squigglepants.gametypes[Squigglepants.sync.gametype] ---@type SquigglepantsGametype?
     local div = (gtDef and gtDef.hasIntermission) and 2 or 1
