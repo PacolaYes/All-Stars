@@ -163,6 +163,7 @@ Squigglepants.addGametype({
                 end
             end
         end
+        v.drawString(320 - 16, 200 - 28, (p.starpostnum + 1)+"/"+(#self.checkpointList), V_SNAPTOBOTTOM|V_SNAPTORIGHT|V_PERPLAYER, "right")
     end,
 
     intermission = function(self, v) ---@param v videolib
